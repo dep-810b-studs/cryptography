@@ -11,12 +11,9 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v1
     - name: Restore dependencies
-      run: |
-        cd ..
-        pwd
-        ls
-        dotnet restore
+      run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
     - name: Test
