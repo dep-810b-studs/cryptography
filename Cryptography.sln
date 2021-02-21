@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptography.WorkingWithBits", "Cryptography.WorkingWithBits\Cryptography.WorkingWithBits.csproj", "{CCBB3E2E-5902-4197-AA0E-044DFCDAABA7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptography.Tests", "Cryptography.Tests\Cryptography.Tests.csproj", "{862114AA-458F-4C3B-A0A1-D487D6CDB467}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CCBB3E2E-5902-4197-AA0E-044DFCDAABA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCBB3E2E-5902-4197-AA0E-044DFCDAABA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCBB3E2E-5902-4197-AA0E-044DFCDAABA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCBB3E2E-5902-4197-AA0E-044DFCDAABA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{862114AA-458F-4C3B-A0A1-D487D6CDB467}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{862114AA-458F-4C3B-A0A1-D487D6CDB467}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{862114AA-458F-4C3B-A0A1-D487D6CDB467}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{862114AA-458F-4C3B-A0A1-D487D6CDB467}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
