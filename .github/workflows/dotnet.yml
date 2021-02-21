@@ -18,9 +18,8 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       env:
-        DOTNET_VERSION: net5.0
         TEST_PROJECT_NAME: Cryptography.Tests
-        PATH_TO_ASSEMBLY: bin/Debug/$DOTNET_VERSION
+        PATH_TO_ASSEMBLY: bin/Debug/net5.0
       run: |
         export PATH="$PATH:/root/.dotnet/tools"
         dotnet tool install --global coverlet.console
