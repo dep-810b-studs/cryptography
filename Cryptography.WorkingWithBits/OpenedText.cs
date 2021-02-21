@@ -11,6 +11,8 @@ namespace Cryptography.WorkingWithBits
             _text = text;
         }
 
+        public uint Value => _text;
+        
         public uint this[int bitNumber]
         {
             get => GetIBit(bitNumber);
@@ -52,6 +54,11 @@ namespace Cryptography.WorkingWithBits
             
             SetIBit(secondBitNumber, firstBit);
             SetIBit(firstBitNumber, secondBit);
+        }
+
+        public void ResetToZeroLowOrderBits(int countLowerBits)
+        {
+           _text = _text >> countLowerBits << countLowerBits;
         }
    }
 }

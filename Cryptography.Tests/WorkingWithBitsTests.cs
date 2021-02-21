@@ -59,5 +59,19 @@ namespace Cryptography.Tests
             Assert.Equal(expectedFirstBit, actualFirstBit);
             Assert.Equal(expectedSecondBit, actualSecondBit);
         }
+        
+        [Theory]
+        [InlineData(0b1010,3,0b1000)]
+        [InlineData(0b1010,2,0b1000)]
+        [InlineData(0b111111,6,0b0)]
+        public void BitsShouldBeCorrectResetToZero(uint number, int countLowerBits, uint expectedResult)
+        { 
+            //arrange
+            var text = new OpenedText(number);
+            //act
+            text.ResetToZeroLowOrderBits(countLowerBits);
+            //assert
+            Assert.Equal(expectedResult, text.Value);
+        }
     }
 }
