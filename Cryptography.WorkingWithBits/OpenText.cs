@@ -2,11 +2,11 @@
 
 namespace Cryptography.WorkingWithBits
 {
-    public class OpenedText
+    public class OpenText
     {
         private uint _text;
 
-        public OpenedText(uint text)
+        public OpenText(uint text)
         {
             _text = text;
         }

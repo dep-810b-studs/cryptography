@@ -14,7 +14,7 @@ namespace Cryptography.Tests
         public void IndexerShouldReturnCorrectBit(uint number, int bitNumber, int expectedBit)
         { 
             //arrange
-            var text = new OpenedText(number);
+            var text = new OpenText(number);
             //act
             var actualBit = (int) text[bitNumber];
             //assert
@@ -31,7 +31,7 @@ namespace Cryptography.Tests
         public void IndexerShouldCorrectlySetBit(uint number, int bitNumber, uint bitValue)
         { 
             //arrange
-            var text = new OpenedText(number);
+            var text = new OpenText(number);
             //act
             text[bitNumber] = bitValue;
             var actualBitValue = (int) text[bitNumber];
@@ -48,7 +48,7 @@ namespace Cryptography.Tests
         public void BitsShouldBeCorrectSwapped(uint number, int firstBitNumber, int secondBitNumber)
         { 
             //arrange
-            var text = new OpenedText(number);
+            var text = new OpenText(number);
             var expectedFirstBit = text[secondBitNumber]; 
             var expectedSecondBit = text[firstBitNumber]; 
             //act
@@ -67,7 +67,7 @@ namespace Cryptography.Tests
         public void BitsShouldBeCorrectResetToZero(uint number, int countLowerBits, uint expectedResult)
         { 
             //arrange
-            var text = new OpenedText(number);
+            var text = new OpenText(number);
             //act
             text.ResetToZeroLowOrderBits(countLowerBits);
             //assert
