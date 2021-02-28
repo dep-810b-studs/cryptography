@@ -83,7 +83,18 @@ namespace Cryptography.WorkingWithBits
             return this;
         }
 
-        public long FindMaxTwoDegreeThatDivisibleByNumber()
+        public OpenText CyclicShift(int shift, ShiftDirection direction)
+        {
+            _text = direction switch
+            {
+                ShiftDirection.Left => _text << shift,
+                ShiftDirection.Right => (uint) ((_text >> shift) | ((~(-1 << shift) & shift) << 32-shift))
+            };
+
+            return this;
+        }
+        
+        public int FindMaxTwoDegreeThatDivisibleByNumber()
         {
             return _multiplyDeBruijnBitPosition2[(((~_text + 1) & _text) * 0x077CB531U) >> 27];
         }
