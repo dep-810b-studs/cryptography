@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Cryptography.WorkingWithBits
@@ -70,13 +71,15 @@ namespace Cryptography.WorkingWithBits
         {
             var textWithReplacedBits = new OpenText(0);
 
+            if (permutations.Any(item => item is < 0 or > 32 ))
+                throw new ArgumentException("Permutations table contains no valid elements.");
+            
             Parallel.For(0, permutations.Length, (i) =>
             {
                 textWithReplacedBits[i] = this[permutations[i]];
             });
 
             _text = textWithReplacedBits.Value;
-
             return this;
         }
    }
