@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cryptography.WorkingWithBits;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Xunit;
 
 namespace Cryptography.Tests
@@ -110,5 +111,20 @@ namespace Cryptography.Tests
             //assert
             Assert.Throws(typeof(ArgumentException),()=> text.ReplaceBitsByPermutations(permutations));
         }
+        
+        [Theory]
+        [InlineData(24,3)]
+        [InlineData(28,2)]
+        [InlineData(62,6)]
+        public void MaxTwoDegreeThatDivisibleByNumberShouldBeCorrectFounded(uint number, byte expectedDegree)
+        { 
+            //arrange
+            var text = new OpenText(number);
+            //act
+            var actualDegree = text.FindMaxTwoDegreeThatDivisibleByNumber();
+            //assert
+            Assert.Equal(expectedDegree, actualDegree);
+        }
+
     }
 }
