@@ -146,6 +146,19 @@ namespace Cryptography.Tests
             //assert
             Assert.Equal(expectedResult,text.Value);
         }
+        
+        [Theory]
+        [InlineData(50,5)]
+        [InlineData(70,6)]
+        public void ShouldReturnCorrectDegreeOfTwoThatNeighborsOfNumber(uint number, int expectedDegree)
+        {
+            //arrange
+            var text = new OpenText(number);
+            //act
+            var actualDegree = text.GetDegreeOfTwoThatNeighborsOfNumber();
+            //assert
+            Assert.Equal(expectedDegree, actualDegree);
+        }
 
     }
 }

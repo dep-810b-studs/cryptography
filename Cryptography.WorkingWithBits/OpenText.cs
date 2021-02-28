@@ -95,6 +95,20 @@ namespace Cryptography.WorkingWithBits
 
             return this;
         }
+
+        public int GetDegreeOfTwoThatNeighborsOfNumber()
+        {
+            var result = -1;
+            uint textCopy = _text;
+
+            while (textCopy > 0)
+            {
+                textCopy >>= 1;
+                result++;
+            }
+
+            return result;
+        }
         
         public int FindMaxTwoDegreeThatDivisibleByNumber()
         {
