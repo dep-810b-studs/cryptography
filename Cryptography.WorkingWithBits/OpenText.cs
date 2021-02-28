@@ -71,7 +71,7 @@ namespace Cryptography.WorkingWithBits
         {
             var textWithReplacedBits = new OpenText(0);
 
-            if (permutations.Any(item => item is < 0 or > 32 ))
+            if (permutations.Any(item => item > 32 ))
                 throw new ArgumentException("Permutations table contains no valid elements.");
             
             Parallel.For(0, permutations.Length, (i) =>
