@@ -101,7 +101,6 @@ namespace Cryptography.Tests
         }
         
         [Theory]
-        [InlineData(-1)]
         [InlineData(33)]
         public void ShouldBeThrownExceptionWhenIllegalItemInPermutationsTable(byte permutation)
         { 
