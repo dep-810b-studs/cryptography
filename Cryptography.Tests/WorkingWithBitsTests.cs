@@ -1,3 +1,6 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using Cryptography.WorkingWithBits;
 using Xunit;
 
@@ -72,6 +75,40 @@ namespace Cryptography.Tests
             text.ResetToZeroLowOrderBits(countLowerBits);
             //assert
             Assert.Equal(expectedResult, text.Value);
+        }
+        
+        private class PermutationsTestsData: IEnumerable<object[]>
+        {
+            public IEnumerator<object[]> GetEnumerator()
+            {
+                yield return new object[] { 0b1010,0b0101,new byte[]{3,2,1,0}};
+                yield return new object[] { 0b11110000,0b00001111,new byte[]{7,6,5,4,3,2,1,0}};
+                yield return new object[] { 0b10101010,0b01010101,new byte[]{7,6,5,4,3,2,1,0}};
+            }
+            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        }
+        
+        [Theory]
+        [ClassData(typeof(PermutationsTestsData))]
+        public void BitsShouldBeCorrectReplacedByPermutations(uint number, uint expectedResult, byte[] permutations)
+        { 
+            //arrange
+            var text = new OpenText(number);
+            //act
+            text.ReplaceBitsByPermutations(permutations);
+            //assert
+            Assert.Equal(expectedResult, text.Value);
+        }
+        
+        [Theory]
+        [InlineData(-1)]
+        [InlineData(33)]
+        public void ShouldBeThrownExceptionWhenIllegalItemInPermutationsTable(params byte[] permutations)
+        { 
+            //arrange
+            var text = new OpenText(0);
+            //assert
+            Assert.Throws(typeof(ArgumentException),()=> text.ReplaceBitsByPermutations(permutations));
         }
     }
 }
