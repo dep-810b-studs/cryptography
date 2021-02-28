@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Cryptography.WorkingWithBits;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Xunit;
@@ -125,6 +126,21 @@ namespace Cryptography.Tests
             var actualDegree = text.FindMaxTwoDegreeThatDivisibleByNumber();
             //assert
             Assert.Equal(expectedDegree, actualDegree);
+        }
+
+        [Theory]
+        [InlineData(
+            0b00000000000000000000000000000001,
+            0b10000000000000000000000000000000,
+            1,ShiftDirection.Right)]
+        public void CyclicShiftShouldCorrectWork(uint number, uint expectedResult,int shift, ShiftDirection shiftDirection)
+        {
+            //arrange
+            var text = new OpenText(number);
+            //act
+            text.CyclicShift(shift, shiftDirection);
+            //assert
+            Assert.Equal(expectedResult,text.Value);
         }
 
     }
