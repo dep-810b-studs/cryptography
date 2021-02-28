@@ -116,6 +116,7 @@ namespace Cryptography.Tests
         [InlineData(24,3)]
         [InlineData(28,2)]
         [InlineData(64,6)]
+        [InlineData(63,0)]
         public void MaxTwoDegreeThatDivisibleByNumberShouldBeCorrectFounded(uint number, byte expectedDegree)
         { 
             //arrange
