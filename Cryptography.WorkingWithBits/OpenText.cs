@@ -85,9 +85,11 @@ namespace Cryptography.WorkingWithBits
 
         public OpenText CyclicShift(int shift, ShiftDirection direction)
         {
+            int p = 32;
+            
             _text = direction switch
             {
-                ShiftDirection.Left => _text << shift,
+                ShiftDirection.Left => (uint) (((_text << shift) & ~(-1 << p)) | (((-1 << p - shift) & _text) >> (p-shift))),
                 ShiftDirection.Right => (uint) ((_text >> shift) | ((~(-1 << shift) & shift) << 32-shift))
             };
 
