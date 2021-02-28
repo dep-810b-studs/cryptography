@@ -103,9 +103,10 @@ namespace Cryptography.Tests
         [Theory]
         [InlineData(-1)]
         [InlineData(33)]
-        public void ShouldBeThrownExceptionWhenIllegalItemInPermutationsTable(params byte[] permutations)
+        public void ShouldBeThrownExceptionWhenIllegalItemInPermutationsTable(byte permutation)
         { 
             //arrange
+            var permutations = new [] {permutation};
             var text = new OpenText(0);
             //assert
             Assert.Throws(typeof(ArgumentException),()=> text.ReplaceBitsByPermutations(permutations));
