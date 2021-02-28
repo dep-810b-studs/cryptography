@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Cryptography.WorkingWithBits
 {
@@ -28,7 +29,7 @@ namespace Cryptography.WorkingWithBits
             return _text >> bitNumber & 1;
         }
         
-        private void SetIBit(int bitNumber, uint bitValue)
+        private OpenText SetIBit(int bitNumber, uint bitValue)
         {
             if(bitNumber < 0)
                 throw new ArgumentException(
@@ -39,26 +40,44 @@ namespace Cryptography.WorkingWithBits
                     $"The argument {nameof(bitValue)} should be correct bit value (0 or 1) but found {bitValue}");
             
             if(GetIBit(bitNumber) == bitValue)
-                return;
+                return this;
 
             _text = (~((uint)1 << bitNumber) & _text) | bitValue << bitNumber;
+            return this;
         }
 
-        public void SwapBits(int firstBitNumber, int secondBitNumber)
+        public OpenText SwapBits(int firstBitNumber, int secondBitNumber)
         {
             var firstBit = GetIBit(firstBitNumber);
             var secondBit = GetIBit(secondBitNumber);
             
             if(firstBit == secondBit)
-                return;
+                return this;
             
             SetIBit(secondBitNumber, firstBit);
             SetIBit(firstBitNumber, secondBit);
+
+            return this;
         }
 
-        public void ResetToZeroLowOrderBits(int countLowerBits)
+        public OpenText ResetToZeroLowOrderBits(int countLowerBits)
         {
            _text = _text >> countLowerBits << countLowerBits;
+           return this;
+        }
+
+        public OpenText ReplaceBitsByPermutations(byte[] permutations)
+        {
+            var textWithReplacedBits = new OpenText(0);
+
+            Parallel.For(0, permutations.Length, (i) =>
+            {
+                textWithReplacedBits[i] = this[permutations[i]];
+            });
+
+            _text = textWithReplacedBits.Value;
+
+            return this;
         }
    }
 }
