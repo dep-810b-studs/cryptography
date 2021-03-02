@@ -2,7 +2,29 @@
 using Cryptography.DemoApplication;
 
 var jobs = new Jobs();
-Console.WriteLine("Выберите задачу");
-int numberTask = Convert.ToInt32(Console.ReadLine());
-var selectedJob = jobs[numberTask-1];
-selectedJob.DynamicInvoke();  
+
+while (true)
+{
+    Console.WriteLine("Please, enter task name (q to exit)");
+    var userChoice = Console.ReadLine();
+
+    if (userChoice == "q")
+        return;
+
+    if(!Int32.TryParse(userChoice, out var jobNumber) || jobNumber is < 1 or > 5)
+    {
+        Console.WriteLine("Entered not correct task number");
+        continue;
+    }
+    
+    var selectedJob = jobs[jobNumber-1];
+    try
+    {
+        selectedJob.DynamicInvoke();  
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine($"Error occured during program working: {e.InnerException.Message}");
+    }
+
+}
