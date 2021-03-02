@@ -74,7 +74,7 @@ namespace Cryptography.DemoApplication
            },
            ()=>
            {
-               //5
+               //4
                Console.WriteLine("Введите число");
                var num = Convert.ToUInt32(Console.ReadLine(),2);
                var text = new OpenText(num);
