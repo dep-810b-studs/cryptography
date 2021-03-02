@@ -137,6 +137,22 @@ namespace Cryptography.Tests
             0b10000000000000000000000000000000,
             0b00000000000000000000000000000001,
             1,ShiftDirection.Left)]
+        [InlineData(
+            0b11111111111111110000000000000000,
+            0b11111111111111100000000000000001,
+            1,ShiftDirection.Left)]
+        [InlineData(
+            0b11111111111111110000000000000000,
+            0b01111111111111111000000000000000,
+            1,ShiftDirection.Right)]
+        [InlineData(
+            0b11111111111111110000000000000000,
+            0b00000000000000001111111111111111,
+            16,ShiftDirection.Left)]
+        [InlineData(
+            0b11111111111111110000000000000000,
+            0b00000000000000001111111111111111,
+            16,ShiftDirection.Right)]
         public void CyclicShiftShouldCorrectWork(uint number, uint expectedResult,int shift, ShiftDirection shiftDirection)
         {
             //arrange
