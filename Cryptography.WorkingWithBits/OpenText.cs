@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net.Security;
 using System.Threading.Tasks;
 
 namespace Cryptography.WorkingWithBits
@@ -7,6 +8,7 @@ namespace Cryptography.WorkingWithBits
     public class OpenText
     {
         private uint _text;
+        private const int P = 32;
 
         public OpenText(uint text)
         {
@@ -23,19 +25,14 @@ namespace Cryptography.WorkingWithBits
 
         private uint GetIBit(int bitNumber)
         {
-            if(bitNumber < 0)
-                throw new ArgumentException(
-                    $"The argument {nameof(bitNumber)} should be correct bit number (less or more then zero) but found {bitNumber}");
-            
+            AssertBitNumberCorrect(bitNumber);
             return _text >> bitNumber & 1;
         }
         
         private OpenText SetIBit(int bitNumber, uint bitValue)
         {
-            if(bitNumber < 0)
-                throw new ArgumentException(
-                    $"The argument {nameof(bitNumber)} should be correct bit number (less or more then zero) but found {bitNumber}");
-            
+            AssertBitNumberCorrect(bitNumber);
+
             if (bitValue is not 0 and not 1)
                 throw new ArgumentException(
                     $"The argument {nameof(bitValue)} should be correct bit value (0 or 1) but found {bitValue}");
@@ -85,12 +82,10 @@ namespace Cryptography.WorkingWithBits
 
         public OpenText CyclicShift(int shift, ShiftDirection direction)
         {
-            int p = 32;
-            
             _text = direction switch
             {
-                ShiftDirection.Left => (uint) (((_text << shift) & ~(-1 << p)) | (((-1 << p - shift) & _text) >> (p-shift))),
-                ShiftDirection.Right => (uint) ((_text >> shift) | ((~(-1 << shift) & shift) << 32-shift))
+                ShiftDirection.Left => _text << shift | _text >> (P - shift),
+                ShiftDirection.Right => _text >> shift | _text << (P - shift)
             };
 
             return this;
@@ -98,7 +93,7 @@ namespace Cryptography.WorkingWithBits
 
         public int GetDegreeOfTwoThatNeighborsOfNumber()
         {
-            var result = -1;
+            var result = 0;
             uint textCopy = _text;
 
             while (textCopy > 0)
@@ -107,7 +102,7 @@ namespace Cryptography.WorkingWithBits
                 result++;
             }
 
-            return result;
+            return result - 1;
         }
         
         public int FindMaxTwoDegreeThatDivisibleByNumber()
@@ -120,5 +115,16 @@ namespace Cryptography.WorkingWithBits
             0, 1, 28, 2, 29, 14, 24, 3, 30, 22, 20, 15, 25, 17, 4, 8,
             31, 27, 13, 23, 21, 19, 16, 7, 26, 12, 18, 6, 11, 5, 10, 9
         };
+
+        #region Utils
+
+        private void AssertBitNumberCorrect(int bitNumber)
+        {
+            if(bitNumber is < 0 or > P)
+                throw new ArgumentException(
+                    $"The argument {nameof(bitNumber)} should be correct bit number (equal or more then zero and less then {P}) but found {bitNumber}");
+        }
+
+        #endregion
     }
 }
