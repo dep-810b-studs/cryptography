@@ -14,6 +14,8 @@ if __name__ == "__main__":
         print(f'File {system_under_test_binary_name} doesnt exist. Program cant work')
         sys.exit()
 
-    system_under_test = Popen(system_under_test_binary_name, stdin=PIPE,text=True)
-    system_under_test.communicate(os.linesep.join(["q"]))    
-
+    system_under_test = Popen(system_under_test_binary_name, stdin=PIPE, stdout=PIPE, stderr=PIPE, text=True)
+    print(system_under_test.stdout.readline())
+    system_under_test.stdin.write("1\n")
+    system_under_test.stdin.flush()
+    print(system_under_test.stdout.readline())
