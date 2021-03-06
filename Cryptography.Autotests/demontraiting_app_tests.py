@@ -16,13 +16,13 @@ if __name__ == "__main__":
         sys.exit()
 
     system_under_test = Popen(system_under_test_binary_name, stdin=PIPE, stdout=PIPE, stderr=PIPE, text=True)
-    print(system_under_test.stdout.readline())
+    system_under_test.stdout.readline()
     system_under_test.stdin.write("2\n")
     system_under_test.stdin.flush()
-    print(system_under_test.stdout.readline())
+    system_under_test.stdout.readline()
     system_under_test.stdin.write("10000000110000001110000011110000\n")
     system_under_test.stdin.flush()
-    print(system_under_test.stdout.readline())
+    system_under_test.stdout.readline()
     system_under_test.stdin.write("3 2 1 0\n")
     system_under_test.stdin.flush()
     expected_applying_permutations_result = "11110000111000001100000010000000"
