@@ -10,6 +10,13 @@ namespace Cryptography.DemoApplication
  
         private readonly Delegate[] Actions = new func[]
         {
+            ///<summary>
+            /// 1st task
+            /// 1. Вывести k-ый бит числа a. Номер бита предварительно запросить у пользователя.
+            ///  2. Установить/снять k-ый бит числа a.
+            /// 3. Поменять местами i-ый и j-ый биты в числе a. Числа i и j предварительно запросить у пользователя.
+            /// 4. Обнулить младшие m бит
+            /// </summary>
             ()=>
             {
                 Console.WriteLine("1) Введите 32-разрядное число в двоичной сс");
@@ -42,12 +49,16 @@ namespace Cryptography.DemoApplication
                 text.ResetToZeroLowOrderBits(m);
                 Console.WriteLine($"Обнуление младших {m} бит {Convert.ToString(text.Value,2)}");
             },
+            ///<summary>
+            /// 2nd task
+            /// 5. Поменять местами байты в заданном 32-х разрядном целом числе. Перестановка задается пользователем.
+            /// </summary>
             ()=>
             {
-                Console.WriteLine("Введите число:");
+                Console.WriteLine("Please, enter a number in a binary representation:");
                 var num = Convert.ToUInt32(Console.ReadLine(),2);
                 var text = new OpenText(num);
-                Console.WriteLine("Введите перестановки через пробел");
+                Console.WriteLine("Please enter permutations array separated by space");
                 var permutations = Console
                     .ReadLine()
                     .Split(' ')
@@ -55,8 +66,12 @@ namespace Cryptography.DemoApplication
                     .ToArray();
                
                 text.ReplaceBytesByPermutations(permutations);
-                Console.WriteLine($"Итоговое число в двоичном представлении:{Convert.ToString(text.Value,2)}");
+                Console.WriteLine($"Result in a binary representation:{Convert.ToString(text.Value,2)}");
             },
+            ///<summary>
+            /// 3rd task
+            /// 6. Найти максимальную степень 2, на которую делится данное целое число. Примечание. Операторами цикла пользоваться нельзя.
+            /// </summary>
             ()=>
             {
                 Console.WriteLine("Введите число:");
@@ -64,6 +79,10 @@ namespace Cryptography.DemoApplication
                 var text = new OpenText(num);
                 Console.WriteLine($"Максимальная степень двойки, на которую делится число {num} = {text.FindMaxTwoDegreeThatDivisibleByNumber()}");
             },
+            ///<summary>
+            /// 4th task
+            /// 7. Пусть x целое число. Найти такое p, что 2^p<=x<=2^(p+1).
+            /// </summary>
            ()=>
            {
                 Console.WriteLine("Введите число:");
@@ -72,9 +91,13 @@ namespace Cryptography.DemoApplication
                 var p = text.GetDegreeOfTwoThatNeighborsOfNumber();
                 Console.WriteLine($"Число p={p}  2^{p}<={num}<=2^{p+1}");
            },
+           ///<summary>
+           /// 5th task
+           /// 8. Написать методы циклического сдвига в 2^p разрядном целом числе на n бит влево и вправо
+           /// </summary>
            ()=>
            {
-               //4
+               
                Console.WriteLine("Введите число");
                var num = Convert.ToUInt32(Console.ReadLine(),2);
                var text = new OpenText(num);
