@@ -1,15 +1,21 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using Cryptography.WorkingWithBits;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Cryptography.Tests
 {
     public class WorkingWithBitsTests
     {
+        private readonly ITestOutputHelper _testOutputHelper;
+
+        public WorkingWithBitsTests(ITestOutputHelper testOutputHelper)
+        {
+            _testOutputHelper = testOutputHelper;
+        }
+
         [Theory]
         [InlineData(1,0,1)]
         [InlineData(0,0,0)]
@@ -83,34 +89,37 @@ namespace Cryptography.Tests
         {
             public IEnumerator<object[]> GetEnumerator()
             {
-                yield return new object[] { 0b1010,0b0101,new byte[]{3,2,1,0}};
-                yield return new object[] { 0b11110000,0b00001111,new byte[]{7,6,5,4,3,2,1,0}};
-                yield return new object[] { 0b10101010,0b01010101,new byte[]{7,6,5,4,3,2,1,0}};
+                yield return new object[] 
+                { 
+                    0b10000000110000001110000011110000,
+                    0b11110000111000001100000010000000,
+                    new byte[]{3,2,1,0}
+                };
             }
             IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         }
         
         [Theory]
         [ClassData(typeof(PermutationsTestsData))]
-        public void BitsShouldBeCorrectReplacedByPermutations(uint number, uint expectedResult, byte[] permutations)
+        public void BytesShouldBeCorrectReplacedByPermutations(uint number, uint expectedResult, byte[] permutations)
         { 
             //arrange
             var text = new OpenText(number);
             //act
-            text.ReplaceBitsByPermutations(permutations);
+            text.ReplaceBytesByPermutations(permutations);
             //assert
             Assert.Equal(expectedResult, text.Value);
         }
         
         [Theory]
-        [InlineData(33)]
+        [InlineData(4)]
         public void ShouldBeThrownExceptionWhenIllegalItemInPermutationsTable(byte permutation)
         { 
             //arrange
             var permutations = new [] {permutation};
             var text = new OpenText(0);
             //assert
-            Assert.Throws(typeof(ArgumentException),()=> text.ReplaceBitsByPermutations(permutations));
+            Assert.Throws(typeof(ArgumentException),()=> text.ReplaceBytesByPermutations(permutations));
         }
         
         [Theory]

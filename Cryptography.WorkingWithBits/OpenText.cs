@@ -64,19 +64,17 @@ namespace Cryptography.WorkingWithBits
            return this;
         }
 
-        public OpenText ReplaceBitsByPermutations(byte[] permutations)
+        public OpenText ReplaceBytesByPermutations(byte[] permutations)
         {
-            var textWithReplacedBits = new OpenText(0);
-
-            if (permutations.Any(item => item > 32 ))
+            if (permutations.Any(item => item > 3 ))
                 throw new ArgumentException("Permutations table contains no valid elements.");
-            
-            Parallel.For(0, permutations.Length, (i) =>
-            {
-                textWithReplacedBits[i] = this[permutations[i]];
-            });
 
-            _text = textWithReplacedBits.Value;
+            uint mask = 0b11111111;
+
+            _text = (_text & mask) << permutations[0] * 8 |
+                    ((_text & mask << 8) >> 8) << permutations[1] * 8 |
+                    ((_text & mask << 16) >> 16) << permutations[2] * 8 |
+                    ((_text & mask << 24) >> 24) << permutations[3] * 8;
             return this;
         }
 

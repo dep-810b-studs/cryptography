@@ -54,7 +54,7 @@ namespace Cryptography.DemoApplication
                     .Select(byte.Parse)
                     .ToArray();
                
-                text.ReplaceBitsByPermutations(permutations);
+                text.ReplaceBytesByPermutations(permutations);
                 Console.WriteLine($"Итоговое число в двоичном представлении:{Convert.ToString(text.Value,2)}");
             },
             ()=>
