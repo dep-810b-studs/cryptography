@@ -6,3 +6,12 @@ riderModule.iml
 **/.name
 *.user
 .idea
+/Cryptography.sln
+*.dll
+*.pdb
+*.runtimeconfig.json
+*.runtimeconfig.dev.json
+*.exe
+*.swp
+*.deps.json
+*.deb
