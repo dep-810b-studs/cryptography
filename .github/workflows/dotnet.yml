@@ -8,7 +8,6 @@ on:
 
 jobs:
   unit_tests:
-
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
@@ -25,3 +24,11 @@ jobs:
         dotnet tool install --global coverlet.console
         coverlet "./$TEST_PROJECT_NAME/$PATH_TO_ASSEMBLY/$TEST_PROJECT_NAME.dll" --target "dotnet" --targetargs "test ./$TEST_PROJECT_NAME/$TEST_PROJECT_NAME.csproj --no-build" --merge-with ./coverage.json
         dotnet test --no-build --verbosity normal
+  functional_tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Test
+        run: |
+          cd ./Cryptography.Autotests
+          ./run_tests.sh
