@@ -17,8 +17,7 @@ if __name__ == "__main__":
     try:
         system_under_test = SystemUnderTest(system_under_test_binary_name)
         expected_applying_permutations_result = "11110000111000001100000010000000"
-        actual_applying_permutations_result = system_under_test.apply_permutations("10000000110000001110000011110000",
-                                                                                   "3 2 1 0")
+        actual_applying_permutations_result = system_under_test.apply_permutations("10000000110000001110000011110000", "3 2 1 0") 
     except Exception as e:
         print(f"There is something error during tests:{e}. Exiting.")
         sys.exit(1)
