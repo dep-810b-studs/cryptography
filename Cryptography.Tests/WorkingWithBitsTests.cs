@@ -95,6 +95,12 @@ namespace Cryptography.Tests
                     0b11110000111000001100000010000000,
                     new byte[]{3,2,1,0}
                 };
+                yield return new object[] 
+                 { 
+                    0b100001001101111,
+                    0b110111101000010,
+                    new byte[]{1,0, 2, 3}
+                 };
             }
             IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         }
@@ -107,6 +113,7 @@ namespace Cryptography.Tests
             var text = new OpenText(number);
             //act
             text.ReplaceBytesByPermutations(permutations);
+            _testOutputHelper.WriteLine(Convert.ToString(text.Value, 2));
             //assert
             Assert.Equal(expectedResult, text.Value);
         }
