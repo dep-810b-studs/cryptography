@@ -20,7 +20,7 @@ if __name__ == "__main__":
         print("start applying permutations")
         actual_applying_permutations_result = system_under_test.apply_permutations("10000000110000001110000011110000", "3 2 1 0")
         print("end applying permutations")
-except Exception as e:
+    except Exception as e:
         print(f"There is something error during tests:{e}. Exiting.")
         sys.exit(1)
 
