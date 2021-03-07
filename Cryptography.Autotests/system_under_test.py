@@ -7,7 +7,8 @@ class SystemUnderTest:
         self.__core = Popen(system_under_test_binary_name, stdin=PIPE, stdout=PIPE, stderr=PIPE, text=True)
 
     def __del__(self):
-        self.__core.terminate()
+        if hasattr(self, '__core'):
+            self.__core.terminate()
 
     def apply_permutations(self, num, permutations):
         self.__core.stdout.readline()
