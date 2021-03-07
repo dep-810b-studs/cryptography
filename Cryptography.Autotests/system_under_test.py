@@ -13,10 +13,10 @@ class SystemUnderTest:
             self.__core.terminate()
 
     def apply_permutations(self, num, permutations):
-        self.__core.stdout.readline()
+        print(self.__core.stdout.readline())
         self.__core.stdin.write("2\n")
         self.__core.stdin.flush()
-        self.__core.stdout.readline()
+        print(self.__core.stdout.readline())
         self.__core.stdin.write(f"{num}\n")
         self.__core.stdin.flush()
         self.__core.stdout.readline()
