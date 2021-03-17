@@ -1,30 +1,26 @@
 ﻿using System;
 using Cryptography.DemoApplication;
 
-var jobs = new Jobs();
+IDemoApplicationJobs demoApplicationJobs;
 
-while (true)
+if (args.Length < 1)
 {
-    Console.WriteLine("Please, enter task number (q to exit)");
-    var userChoice = Console.ReadLine();
-
-    if (userChoice == "q")
-        return;
-
-    if(!Int32.TryParse(userChoice, out var jobNumber) || jobNumber is < 1 or > 5)
-    {
-        Console.WriteLine("Entered not correct task number");
-        continue;
-    }
-    
-    var selectedJob = jobs[jobNumber-1];
-    try
-    {
-        selectedJob.DynamicInvoke();  
-    }
-    catch (Exception e)
-    {
-        Console.WriteLine($"Error occured during program working: {e.InnerException.Message}");
-    }
-
+    demoApplicationJobs = new WorkingWithBitsJobs();
 }
+else
+{
+    var jobsName = args[0];
+    if (!JobExecutor.SupportedJobTypes.Contains(jobsName))
+    {
+        Console.WriteLine($"These type of jobs({jobsName}) didn't supported... ");
+        return;
+    }
+    demoApplicationJobs = jobsName switch
+    {
+        "working-with-bits" => new WorkingWithBitsJobs(),
+        "primes-numbers" => new PrimesNumbersJobs()
+    };
+}
+
+JobExecutor.Run(demoApplicationJobs);
+
