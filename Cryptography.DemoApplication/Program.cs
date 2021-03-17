@@ -1,26 +1,18 @@
 ﻿using System;
 using Cryptography.DemoApplication;
 
-IDemoApplicationJobs demoApplicationJobs;
-
 if (args.Length < 1)
 {
-    demoApplicationJobs = new WorkingWithBitsJobs();
-}
-else
-{
-    var jobsName = args[0];
-    if (!JobExecutor.SupportedJobTypes.Contains(jobsName))
-    {
-        Console.WriteLine($"These type of jobs({jobsName}) didn't supported... ");
-        return;
-    }
-    demoApplicationJobs = jobsName switch
-    {
-        "working-with-bits" => new WorkingWithBitsJobs(),
-        "primes-numbers" => new PrimesNumbersJobs()
-    };
+    Console.WriteLine("You should specify tasks type to run application");
 }
 
-JobExecutor.Run(demoApplicationJobs);
+var jobsName = args[0];
+var jobsCreated = JobExecutor.TryCreateJobs(jobsName, out var demoApplicationJobs);
+if (jobsCreated)
+{
+    JobExecutor.Run(demoApplicationJobs);
+}
+
+
+
 
