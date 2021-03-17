@@ -4,7 +4,7 @@ from subprocess import PIPE, Popen
 
 class SystemUnderTest:
     def __init__(self, system_under_test_binary_name):
-        self.__core = Popen(system_under_test_binary_name, stdin=PIPE, stdout=PIPE, stderr=PIPE, text=True)
+        self.__core = Popen(f'{system_under_test_binary_name} working-with-bits', stdin=PIPE, stdout=PIPE, stderr=PIPE, text=True)
 
     def __del__(self):
         if hasattr(self, '__core'):
