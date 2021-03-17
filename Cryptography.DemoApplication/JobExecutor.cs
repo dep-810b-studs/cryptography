@@ -5,9 +5,28 @@ namespace Cryptography.DemoApplication
 {
     public static class JobExecutor
     {
-        public static readonly List<string> SupportedJobTypes = new() 
+        private static readonly List<string> SupportedJobTypes = new() 
             {"working-with-bits", "primes-numbers"};
 
+        public static bool TryCreateJobs(string jobsName, out IDemoApplicationJobs demoApplicationJobs)
+        {
+            demoApplicationJobs = null;
+                
+            if (!SupportedJobTypes.Contains(jobsName))
+            {
+                Console.WriteLine($"These type of jobs({jobsName}) didn't supported... ");
+                return false;
+            }
+            
+            demoApplicationJobs = jobsName switch
+            {
+                "working-with-bits" => new WorkingWithBitsJobs(),
+                "primes-numbers" => new PrimesNumbersJobs()
+            };
+
+            return true;
+        }
+        
         public static void Run<T>(T jobs) where T : IDemoApplicationJobs
         {
             while (true)
