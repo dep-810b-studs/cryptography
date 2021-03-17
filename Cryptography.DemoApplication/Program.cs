@@ -5,7 +5,7 @@ var jobs = new Jobs();
 
 while (true)
 {
-    Console.WriteLine("Please, enter task name (q to exit)");
+    Console.WriteLine("Please, enter task number (q to exit)");
     var userChoice = Console.ReadLine();
 
     if (userChoice == "q")

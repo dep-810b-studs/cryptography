@@ -75,6 +75,7 @@ namespace Cryptography.WorkingWithBits
                     ((_text & mask << 8) >> 8) << permutations[1] * 8 |
                     ((_text & mask << 16) >> 16) << permutations[2] * 8 |
                     ((_text & mask << 24) >> 24) << permutations[3] * 8;
+            
             return this;
         }
 
@@ -83,6 +84,7 @@ namespace Cryptography.WorkingWithBits
             _text = direction switch
             {
                 ShiftDirection.Left => _text << shift | _text >> (P - shift),
+                
                 ShiftDirection.Right => _text >> shift | _text << (P - shift)
             };
 

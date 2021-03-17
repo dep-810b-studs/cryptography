@@ -100,13 +100,14 @@ namespace Cryptography.DemoApplication
                
                Console.WriteLine("Введите число");
                var num = Convert.ToUInt32(Console.ReadLine(),2);
-               var text = new OpenText(num);
+               var textForRightShift = new OpenText(num);
+               var textForLeftShift = new OpenText(num);
                Console.WriteLine("Введите число n,на которое хотите сдвинуть:");
                var shift = Convert.ToInt32(Console.ReadLine());
-               text.CyclicShift(shift, ShiftDirection.Right);
-               Console.WriteLine($"Циклический сдвиг вправо на {shift} бит: {Convert.ToString(text.Value,2)}");
-               text.CyclicShift(shift, ShiftDirection.Left);
-               Console.WriteLine($"Циклический сдвиг влево на {shift} бит: {Convert.ToString(text.Value,2)}");
+               textForRightShift.CyclicShift(shift, ShiftDirection.Right);
+               Console.WriteLine($"Циклический сдвиг вправо на {shift} бит: {Convert.ToString(textForRightShift.Value,2)}");
+               textForLeftShift.CyclicShift(shift, ShiftDirection.Left);
+               Console.WriteLine($"Циклический сдвиг влево на {shift} бит: {Convert.ToString(textForLeftShift.Value,2)}");
            }
         };
 
