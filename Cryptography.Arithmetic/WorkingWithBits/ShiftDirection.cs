@@ -1,4 +1,4 @@
-﻿namespace Cryptography.WorkingWithBits
+﻿namespace Cryptography.Arithmetic.WorkingWithBits
 {
     public enum ShiftDirection
     {

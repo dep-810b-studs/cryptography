@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Linq;
-using System.Net.Security;
-using System.Threading.Tasks;
 
-namespace Cryptography.WorkingWithBits
+namespace Cryptography.Arithmetic.WorkingWithBits
 {
     public class OpenText
     {

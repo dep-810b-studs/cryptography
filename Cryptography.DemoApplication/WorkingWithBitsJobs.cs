@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Linq;
-using Cryptography.WorkingWithBits;
+using Cryptography.Arithmetic.WorkingWithBits;
 
 namespace Cryptography.DemoApplication
 {
     public class WorkingWithBitsJobs : BaseJobs
     {
+        #region Delegates invoking tasks
+        
         ///<summary>
         /// 1st task
         /// 1. Вывести k-ый бит числа a. Номер бита предварительно запросить у пользователя.
@@ -112,6 +114,7 @@ namespace Cryptography.DemoApplication
                 $"Циклический сдвиг влево на {shift} бит: {Convert.ToString(textForLeftShift.Value, 2)}");
         }; 
         
+        #endregion
         public WorkingWithBitsJobs()
         {
             Actions = new []

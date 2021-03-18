@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Cryptography.WorkingWithBits;
+using Cryptography.Arithmetic.WorkingWithBits;
 using Xunit;
 using Xunit.Abstractions;
 
