@@ -64,12 +64,22 @@ namespace Cryptography.Arithmetic.ResidueNumberSystem
 
         public ulong Pow(ulong number, ulong degree)
         {
-            if (degree == 0)
-                return 1;
-            
-            var z = Pow(number, degree / 2);
-            var multiplier = degree % 2 == 0 ? 1 : number;
-            return (multiplier * z * z) % Module;
+            ulong result = 1;
+
+            while (degree != 0)
+            {
+                if (degree % 2 == 0)
+                {
+                    degree /= 2;
+                    number = (number * number) % Module;
+                }
+                else
+                {
+                    degree--;
+                    result = (result * number) % Module;
+                }
+            }
+            return result;
         }
 
         public static int[] GetSimpleNumbersLessThenM(int count)
