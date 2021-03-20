@@ -17,7 +17,11 @@ namespace Cryptography.DemoApplication
         private readonly func _getReducedResidueSystemJob = () =>
         {
             int m = GetNumberFromUser();
-            var arr = ResidueNumberSystem.ReducedResidueSystem(m);
+            var residueNumberSystem = new ResidueNumberSystem()
+            {
+                Module = (ulong)m
+            };
+            var arr = residueNumberSystem.ReducedResidueSystem(m);
             Console.Write($"Приведеная система вычетов по модулю {m} : ");
             foreach (var num in arr) Console.Write($"{num} ");
             Console.WriteLine();
@@ -26,7 +30,7 @@ namespace Cryptography.DemoApplication
         private readonly func _calculateEylerFunctionJob = () =>
         {
             int m = GetNumberFromUser();
-            var functionValue = ResidueNumberSystem.EylerFunction((ulong)m);
+            var functionValue = ResidueNumberSystem.CalculateEylerFunction((ulong)m);
             Console.WriteLine($" f({m}) = {functionValue}");
         };
         
