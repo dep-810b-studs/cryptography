@@ -68,16 +68,13 @@ namespace Cryptography.Arithmetic.ResidueNumberSystem
 
             while (degree != 0)
             {
-                if (degree % 2 == 0)
+                if ((degree & 1) == 1)
                 {
-                    degree /= 2;
-                    number = (number * number) % Module;
-                }
-                else
-                {
-                    degree--;
                     result = (result * number) % Module;
                 }
+                
+                number = (number * number) % Module;
+                degree >>= 1;
             }
             return result;
         }
