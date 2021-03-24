@@ -3,12 +3,12 @@ using Cryptography.Arithmetic.ResidueNumberSystem;
 
 namespace Cryptography.Algorithms.RSA
 {
-    public class RSA 
+    public class RSACipher
     {
         private readonly ResidueNumberSystem _residueNumberSystem;
         private readonly RSASettings _rsaSettings;
         
-        public RSA(ResidueNumberSystem residueNumberSystem, RSASettings rsaSettings)
+        public RSACipher(ResidueNumberSystem residueNumberSystem, RSASettings rsaSettings)
         {
             _residueNumberSystem = residueNumberSystem;
             _rsaSettings = rsaSettings;
@@ -23,10 +23,10 @@ namespace Cryptography.Algorithms.RSA
             _residueNumberSystem.Module = p * q;
 
             ulong eilerFunctionValue = _residueNumberSystem.CalculateEylerFunction(p, q);
-            var (decryptionExponent, _, _) = 
+            var ( _, decryptionExponent,_) = 
                 _residueNumberSystem.ExtendedEuclideanAlgorithm(encryptionExponent, eilerFunctionValue);
 
-            var cipherText = _residueNumberSystem.Pow(message, eilerFunctionValue);
+            var cipherText = _residueNumberSystem.Pow(message, encryptionExponent);
 
             var encryptionResult = new RSAEncryptionResult()
             {
