@@ -24,7 +24,7 @@ namespace Cryptography.Algorithms.RSA
 
             ulong eilerFunctionValue = _residueNumberSystem.CalculateEylerFunction(p, q);
             var (decryptionExponent, _, _) = 
-                _residueNumberSystem.ExtendedEuclideanAlgorithm(encryptionExponent, (p - 1) * (q - 1));
+                _residueNumberSystem.ExtendedEuclideanAlgorithm(encryptionExponent, eilerFunctionValue);
 
             var cipherText = _residueNumberSystem.Pow(message, eilerFunctionValue);
 
