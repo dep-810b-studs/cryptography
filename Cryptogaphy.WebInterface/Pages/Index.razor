@@ -2,3 +2,17 @@
 
 <h1>Шифрование данных на основе алгоритма RSA</h1>
 
+<InputText @bind-Value=RsaInputData.Message/>
+
+@code
+{
+    public class RSAInputData
+    {
+        public string P { get; set; } = "";
+        public string Q { get; set; } = "";
+        public string Message { get; set; } = "";
+    }
+
+    public RSAInputData RsaInputData = new ();
+
+}
