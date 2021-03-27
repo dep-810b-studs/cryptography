@@ -1,5 +1,6 @@
 ﻿using Cryptography.Algorithms.RSA;
 using Cryptography.Arithmetic.ResidueNumberSystem;
+using Microsoft.Extensions.Options;
 using Xunit;
 
 namespace Cryptography.Tests
@@ -18,7 +19,7 @@ namespace Cryptography.Tests
 
             var residueNumberSystem = new ResidueNumberSystem();
             
-            _rsaCipher = new RSACipher(residueNumberSystem, rsaSettings);
+            _rsaCipher = new RSACipher(residueNumberSystem, Options.Create(rsaSettings));
         }
 
         [Theory]
