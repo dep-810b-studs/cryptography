@@ -9,7 +9,7 @@ namespace Cryptography.DemoApplication
         public virtual Delegate GetJob(int jobNumber)
         {
             if (jobNumber is < 1 or > 5)
-                throw new ArgumentOutOfRangeException($"There is no task with number {jobNumber}");
+                throw new ArgumentOutOfRangeException(nameof(jobNumber),$"There is no task with number {jobNumber}");
 
             return Actions[jobNumber-1];
         }
