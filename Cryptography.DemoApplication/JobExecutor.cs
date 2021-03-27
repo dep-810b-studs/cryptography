@@ -50,7 +50,7 @@ namespace Cryptography.DemoApplication
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine($"Error occured during program working: {e.InnerException.Message}");
+                    Console.WriteLine($"Error occured during program working: {e.InnerException?.Message ?? e.Message}");
                 }
 
             }
