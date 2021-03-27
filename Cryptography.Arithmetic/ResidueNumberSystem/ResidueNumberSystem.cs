@@ -27,7 +27,7 @@ namespace Cryptography.Arithmetic.ResidueNumberSystem
         }
         
         /// <remarks>
-        /// Поддерживается деление только на взаимнопростые с модулем числа
+        /// Поддерживается деление только по простому модулю
         ///  a / b (mod M) = a * b^-1 (mod M) = a * b^(M-2) (mod M)
         /// основано на  a^(M-2)=a^(-1) (mod M)
         /// </remarks>
