@@ -1,17 +1,24 @@
 ﻿using System;
 using Cryptography.Arithmetic.ResidueNumberSystem;
+using Microsoft.Extensions.Options;
 
 namespace Cryptography.Algorithms.RSA
 {
-    public class RSACipher
+    public interface IRSACipher
     {
-        private readonly ResidueNumberSystem _residueNumberSystem;
+        RSAEncryptionResult EnCrypt(ulong message, uint p, uint q, ulong encryptionExponent);
+        ulong DeCrypt(RSAEncryptionResult rsaEncryptionResult);
+    }
+    
+    public class RSACipher : IRSACipher
+    {
+        private readonly IResidueNumberSystem _residueNumberSystem;
         private readonly RSASettings _rsaSettings;
         
-        public RSACipher(ResidueNumberSystem residueNumberSystem, RSASettings rsaSettings)
+        public RSACipher(IResidueNumberSystem residueNumberSystem, IOptions<RSASettings> rsaSettings)
         {
             _residueNumberSystem = residueNumberSystem;
-            _rsaSettings = rsaSettings;
+            _rsaSettings = rsaSettings.Value;
         }
         
         public RSAEncryptionResult EnCrypt(ulong message, uint p, uint q, ulong encryptionExponent)
@@ -40,9 +47,9 @@ namespace Cryptography.Algorithms.RSA
 
         public ulong DeCrypt(RSAEncryptionResult rsaEncryptionResult)
         {
-            AssertPrimeNumberBitsCountCorrect(rsaEncryptionResult.SecretKey.p);
-            AssertPrimeNumberBitsCountCorrect(rsaEncryptionResult.SecretKey.p);
-            AssertEncryptionExponentCorrect(rsaEncryptionResult.PublicKey.E, rsaEncryptionResult.SecretKey.p, rsaEncryptionResult.SecretKey.q);
+            //AssertPrimeNumberBitsCountCorrect(rsaEncryptionResult.SecretKey.p);
+            //AssertPrimeNumberBitsCountCorrect(rsaEncryptionResult.SecretKey.p);
+            //AssertEncryptionExponentCorrect(rsaEncryptionResult.PublicKey.E, rsaEncryptionResult.SecretKey.p, rsaEncryptionResult.SecretKey.q);
 
             _residueNumberSystem.Module = rsaEncryptionResult.PublicKey.N;
 

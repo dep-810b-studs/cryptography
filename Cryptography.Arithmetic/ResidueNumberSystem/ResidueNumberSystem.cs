@@ -4,10 +4,19 @@ using System.Linq;
 
 namespace Cryptography.Arithmetic.ResidueNumberSystem
 {
-    public class ResidueNumberSystem
+    public interface IResidueNumberSystem
     {
         public ulong Module { set; get; }
-
+        ulong CalculateEylerFunction(uint p, uint q);
+        (ulong d, ulong x, ulong y) ExtendedEuclideanAlgorithm(ulong a, ulong b);
+        ulong Pow(ulong number, ulong degree);
+        ulong GreatestCommonDivisor(ulong firstNumber, ulong secondNumber);
+    }
+    
+    
+    public class ResidueNumberSystem : IResidueNumberSystem
+    {
+        public ulong Module { get; set; }
 
         #region AriphmeticOperations
 
@@ -139,5 +148,6 @@ namespace Cryptography.Arithmetic.ResidueNumberSystem
         public IEnumerable<int> ReducedResidueSystem() =>  Enumerable
                 .Range(1, (int) Module)
                 .Where(i => GreatestCommonDivisor((ulong) i, Module) == 1);
+
     }
 }
