@@ -1,4 +1,7 @@
-﻿using System.Reflection;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using Cryptography.Arithmetic.ResidueNumberSystem;
 using Xunit;
 
@@ -24,6 +27,36 @@ namespace Cryptography.Tests
             var actualResult = _residueNumberSystemUnderTest.Pow(num, pow);
             //assert
             Assert.Equal(expectedResult, actualResult);
+        }
+
+        
+        private class PrimesNumbersTestData : IEnumerable<object[]>
+        {
+            public IEnumerator<object[]> GetEnumerator()
+            {
+                yield return new object[] 
+                {
+                    30,
+                    new List<int>{1,2,3,5,7,11,13,17,19,23,29}
+                };
+                yield return new object[] 
+                {
+                    10,
+                    new List<int>{1,2,3,5,7}
+                };
+            }
+
+            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        }
+        
+        [Theory]
+        [ClassData(typeof(PrimesNumbersTestData))]
+        public void ReshetoEratosfenaShouldWorkCorrect(uint count, IEnumerable<int> expectedResult)
+        {
+            //act
+            var numbers = ResidueNumberSystem.GetSimpleNumbersLessThenM(count).ToList();
+            //assert
+            Assert.Equal(expectedResult, numbers);
         }
 }
 }
