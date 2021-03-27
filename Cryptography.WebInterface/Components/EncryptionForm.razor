@@ -1,0 +1,44 @@
+﻿@namespace Cryptography.WebInterface.Components  
+@using Cryptography.WebInterface.Rsa
+@using System.ComponentModel.DataAnnotations
+@inject IJSRuntime JsRuntime;
+@inject IRsaEncryptionSystem EncryptionSystem
+
+<div class="encyption-page">
+    <h2>Введите текст для шифрования</h2>
+    <p>
+        <input @bind="message"/>
+    </p>
+    <h2>Введите P</h2>
+    <input @bind="P" required="true"/>
+    <h2>Введите Q</h2>
+    <input @bind="Q"/>
+    <h2>Введите открытую экспоненту</h2>
+    <input @bind="exponent"/>
+    <Button @onclick="Encrypt">
+        Зашифровать
+    </Button>
+</div>
+
+@code {
+    [Required]
+    private string message;
+    private string P;
+    private string Q;
+    private string exponent;
+    
+    private async Task Encrypt()
+    {
+        var encryptionResult = string.Empty;
+
+        try
+        {
+            encryptionResult = EncryptionSystem.Encrypt(message, P, Q, exponent);
+        }
+        catch (Exception e)
+        {
+            await JsRuntime.InvokeVoidAsync("alert", e.StackTrace ?? e.Message);
+        }
+        Console.WriteLine(encryptionResult);
+    }
+}
