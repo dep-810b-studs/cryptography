@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Xml.Schema;
+using System.Linq;
 
 namespace Cryptography.Arithmetic.ResidueNumberSystem
 {
@@ -9,6 +8,54 @@ namespace Cryptography.Arithmetic.ResidueNumberSystem
     {
         public ulong Module { set; get; }
 
+
+        #region AriphmeticOperations
+
+        public ulong Add(ulong firstNumber, ulong secondNumber)
+        {
+            return (firstNumber + secondNumber) % Module;
+        }
+        
+        public ulong Subtract(ulong firstNumber, ulong secondNumber)
+        {
+            return (firstNumber - secondNumber) % Module;
+        }
+        
+        public ulong Multiply(ulong firstNumber, ulong secondNumber)
+        {
+            return (firstNumber * secondNumber) % Module;
+        }
+        
+        /// <remarks>
+        /// Поддерживается деление только на взаимнопростые с модулем числа
+        ///  a / b (mod M) = a * b^-1 (mod M) = a * b^(M-2) (mod M)
+        /// основано на  a^(M-2)=a^(-1) (mod M)
+        /// </remarks>
+        public ulong Division(ulong firstNumber, ulong secondNumber)
+        {
+            return Multiply(firstNumber, Pow(secondNumber, Module - 2));
+        }
+
+        
+        public ulong Pow(ulong number, ulong degree)
+        {
+            ulong result = 1;
+
+            while (degree != 0)
+            {
+                if ((degree & 1) == 1)
+                {
+                    result = (result * number) % Module;
+                }
+                
+                number = (number * number) % Module;
+                degree >>= 1;
+            }
+            return result;
+        }
+        
+        #endregion
+        
         public ulong GreatestCommonDivisor(ulong firstNumber, ulong secondNumber)
         {
             while (secondNumber != 0)
@@ -62,64 +109,35 @@ namespace Cryptography.Arithmetic.ResidueNumberSystem
             return (d, x, y);
         }
 
-        public ulong Pow(ulong number, ulong degree)
+        public static IEnumerable<int> GetSimpleNumbersLessThenM(uint count)
         {
-            ulong result = 1;
-
-            while (degree != 0)
-            {
-                if ((degree & 1) == 1)
-                {
-                    result = (result * number) % Module;
-                }
-                
-                number = (number * number) % Module;
-                degree >>= 1;
-            }
-            return result;
-        }
-
-        public static int[] GetSimpleNumbersLessThenM(int count)
-        {
-            var numbers = new bool[count];
-            var res = new List<int>();
-
-            Parallel.For(0, count, (iterator) => numbers[iterator] = true);
-
+            var numberIsPrimeMapping = Enumerable
+                .Repeat(true, (int)count-1)
+                .Prepend(false)
+                .Select((isPrime, index) => (index, isPrime))
+                .ToArray();
+            
             int p = 2;
-            int i = 2;
 
-            while (i * i < count)
+            while (p * p < count)
             {
-                if (numbers[i])
-                    for (int j = i * i; j < count; j += i)
-                        numbers[j] = false;
-                i++;
+                for (int i = p * p; i < count; i += p)
+                {
+                    numberIsPrimeMapping[i].isPrime = false;
+                }
+
+                p = numberIsPrimeMapping
+                    .First(number => number.index > p && number.isPrime)
+                    .index;
             }
 
-            int num = 0;
-
-            foreach (var n in numbers)
-            {
-                if ((n) && num > 1) res.Add(num);
-                num++;
-            }
-
-            return res.ToArray();
+            return numberIsPrimeMapping
+                .Where(tuple => tuple.isPrime)
+                .Select(tuple => tuple.index);
         }
 
-        public int[] ReducedResidueSystem(int modulo)
-        {
-            var res = new List<int>();
-
-            Parallel.For(0, modulo, (i) =>
-            {
-                if (GreatestCommonDivisor((ulong)i, (ulong)modulo) == 1) res.Add(i);
-            });
-
-            res.Sort();
-
-            return res.ToArray();
-        }
+        public IEnumerable<int> ReducedResidueSystem() =>  Enumerable
+                .Range(1, (int) Module)
+                .Where(i => GreatestCommonDivisor((ulong) i, Module) == 1);
     }
 }
