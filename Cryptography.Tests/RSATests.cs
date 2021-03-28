@@ -52,7 +52,7 @@ namespace Cryptography.Tests
         }
         
         [Theory]
-        [InlineData(7500641,9973,9967,37)]
+        [InlineData(7500641,9973,9967,65537)]
         [InlineData(2,7,11,37)]
         [InlineData(123,11,13,113)]
         [InlineData(123,9973,9967,65537)]
