@@ -3,6 +3,7 @@
 @using System.ComponentModel.DataAnnotations
 @inject IJSRuntime JsRuntime;
 @inject IRsaEncryptionSystem EncryptionSystem
+@inject IMessageConvertor Convertor
 
 <div class="encyption-page">
     <h2>Введите текст для шифрования</h2>
@@ -15,9 +16,14 @@
     <input @bind="Q"/>
     <h2>Введите открытую экспоненту</h2>
     <input @bind="exponent"/>
+    <Button @onclick="GenerateRandomKey">
+       Сгенерировать случайные p и q 
+    </Button>
     <Button @onclick="Encrypt">
         Зашифровать
     </Button>
+    <h2>Шифротекст</h2>
+    <textarea>@CipherText</textarea>
 </div>
 
 @code {
@@ -25,7 +31,8 @@
     private string message;
     private string P;
     private string Q;
-    private string exponent;
+    private string exponent = "65537";
+    private string CipherText;
     
     private async Task Encrypt()
     {
@@ -39,6 +46,25 @@
         {
             await JsRuntime.InvokeVoidAsync("alert", e.ToString());
         }
-        Console.WriteLine(encryptionResult);
+        CipherText = encryptionResult;
+    }
+    
+    
+    private async Task GenerateRandomKey()
+    {
+        try
+        {
+            var p = EncryptionSystem.GetRandomPrimeNumber(10000, number => number > 900);
+
+            ulong q = EncryptionSystem.GetRandomPrimeNumber(10000,
+                    number => number > 900 && number != (int) p);
+
+            P = p.ToString();
+            Q = q.ToString();
+        }
+        catch (Exception e)
+        {
+            await JsRuntime.InvokeVoidAsync("alert", e.ToString());
+        }
     }
 }

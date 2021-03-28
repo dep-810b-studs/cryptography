@@ -11,6 +11,7 @@ namespace Cryptography.Arithmetic.ResidueNumberSystem
         ulong MultiplicativeInverse(ulong number, ulong eylerFunctionValue);
         ulong Pow(ulong number, ulong degree);
         ulong GreatestCommonDivisor(ulong firstNumber, ulong secondNumber);
+        IEnumerable<int> GetSimpleNumbersLessThenM(int count);
     }
     
     
@@ -118,7 +119,7 @@ namespace Cryptography.Arithmetic.ResidueNumberSystem
             return (d, x, x1);
         }
 
-        public static IEnumerable<int> GetSimpleNumbersLessThenM(uint count)
+        public IEnumerable<int> GetSimpleNumbersLessThenM(int count)
         {
             var numberIsPrimeMapping = Enumerable
                 .Repeat(true, (int)count-1)
