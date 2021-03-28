@@ -29,11 +29,24 @@ namespace Cryptography.Algorithms.RSA
             
             _residueNumberSystem.Module = p * q;
 
-            ulong eilerFunctionValue = _residueNumberSystem.CalculateEylerFunction(p, q);
-            var ( _, decryptionExponent,_) = 
-                _residueNumberSystem.ExtendedEuclideanAlgorithm(encryptionExponent, eilerFunctionValue);
+            AssertMessageSizeCorrect(message, _residueNumberSystem.Module);
 
+            ulong eylerFunctionValue = _residueNumberSystem.CalculateEylerFunction(p, q);
+             var ( _, a,b) = 
+                  _residueNumberSystem.ExtendedEuclideanAlgorithm(encryptionExponent, eylerFunctionValue);
+            
+            var decryptionExponent = a % _residueNumberSystem.Module;
+
+            Console.WriteLine($"Encrypting.Message = {message}");
+            Console.WriteLine($"Encrypting.p = {p}");
+            Console.WriteLine($"Encrypting.q = {q}");
+            Console.WriteLine($"Encrypting.e = {encryptionExponent}");
+            Console.WriteLine($"Encrypting.d = {decryptionExponent}");
+            Console.WriteLine($"Encrypting.N = {_residueNumberSystem.Module}");
+            
             var cipherText = _residueNumberSystem.Pow(message, encryptionExponent);
+
+            Console.WriteLine($"Encrypting.Cipher Text = {cipherText}");
 
             var encryptionResult = new RSAEncryptionResult()
             {
@@ -52,8 +65,12 @@ namespace Cryptography.Algorithms.RSA
             //AssertEncryptionExponentCorrect(rsaEncryptionResult.PublicKey.E, rsaEncryptionResult.SecretKey.p, rsaEncryptionResult.SecretKey.q);
 
             _residueNumberSystem.Module = rsaEncryptionResult.PublicKey.N;
+            
+            Console.WriteLine($"Decrypting.Cipher Text = {rsaEncryptionResult.CipherText}");
 
             var message = _residueNumberSystem.Pow(rsaEncryptionResult.CipherText, rsaEncryptionResult.SecretKey.d);
+
+            Console.WriteLine($"Decrypting.Message = {message}");
 
             return message;
         }
@@ -92,6 +109,13 @@ namespace Cryptography.Algorithms.RSA
             if (!encryptedExponentCorrect)
                 throw new ArgumentException("The encryption exponent is not mutually prime with p-1 or q-1.");
         }
+
+        private void AssertMessageSizeCorrect(ulong message, ulong module)
+        {
+            if (message >= module)
+                throw new ArgumentException("Message should be less then N");
+        }
+
 
         #endregion
     }
