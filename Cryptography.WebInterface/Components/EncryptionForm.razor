@@ -37,7 +37,7 @@
         }
         catch (Exception e)
         {
-            await JsRuntime.InvokeVoidAsync("alert", e.StackTrace ?? e.Message);
+            await JsRuntime.InvokeVoidAsync("alert", e.ToString());
         }
         Console.WriteLine(encryptionResult);
     }
