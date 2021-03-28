@@ -14,7 +14,8 @@ namespace Cryptography.DemoApplication
         {
             uint m = GetNumberFromUser();
             Console.Write($"Целые простые числа меньшие {m} : ");
-            var primeNumbers = ResidueNumberSystem.GetSimpleNumbersLessThenM(m);
+            var residueNumberSystem = new ResidueNumberSystem();
+            var primeNumbers = residueNumberSystem.GetSimpleNumbersLessThenM((int)m);
             Console.WriteLine(string.Join(" ",primeNumbers));
         };
 
@@ -30,9 +31,7 @@ namespace Cryptography.DemoApplication
             };
             var arr = residueNumberSystem.ReducedResidueSystem();
             Console.Write($"Приведеная система вычетов по модулю {m} : ");
-            foreach (var num in arr) 
-                Console.Write($"{num} ");
-            Console.WriteLine();
+            Console.WriteLine(string.Join(" ", arr));
         };
         
         /// <summary>
