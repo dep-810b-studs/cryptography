@@ -102,20 +102,17 @@ namespace Cryptography.Arithmetic.ResidueNumberSystem
         public (ulong d, ulong x, ulong y) ExtendedEuclideanAlgorithm(ulong a, ulong b)
         {
             ulong x = 0;
-            ulong y = 0;
 
             if (a == 0)
             {
-                y = 1;
-                return (b, x, y);
+                return (b, x, 1);
             }
             
             var (d,x1,y1) =  ExtendedEuclideanAlgorithm(b % a, a);
 
             x = y1 - (b / a) * x1;
-            y = x1;
             
-            return (d, x, y);
+            return (d, x, x1);
         }
 
         public static IEnumerable<int> GetSimpleNumbersLessThenM(uint count)
