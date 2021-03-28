@@ -32,10 +32,14 @@ namespace Cryptography.Algorithms.RSA
             AssertMessageSizeCorrect(message, _residueNumberSystem.Module);
 
             ulong eylerFunctionValue = _residueNumberSystem.CalculateEylerFunction(p, q);
-             var ( _, a,b) = 
-                  _residueNumberSystem.ExtendedEuclideanAlgorithm(encryptionExponent, eylerFunctionValue);
-            
-            var decryptionExponent = a % _residueNumberSystem.Module;
+            //  var ( _, a,b) = 
+            //       _residueNumberSystem.ExtendedEuclideanAlgorithm(encryptionExponent, eylerFunctionValue);
+            //
+            //  var d = Math.Min(a, b);
+            //  
+            // var decryptionExponent =  d % _residueNumberSystem.Module;
+
+            var decryptionExponent = _residueNumberSystem.MultiplicativeInverse(encryptionExponent, eylerFunctionValue);
 
             Console.WriteLine($"Encrypting.Message = {message}");
             Console.WriteLine($"Encrypting.p = {p}");
