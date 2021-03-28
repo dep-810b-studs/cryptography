@@ -8,7 +8,7 @@ namespace Cryptography.Arithmetic.ResidueNumberSystem
     {
         public ulong Module { set; get; }
         ulong CalculateEylerFunction(uint p, uint q);
-        (ulong d, ulong x, ulong y) ExtendedEuclideanAlgorithm(ulong a, ulong b);
+        ulong MultiplicativeInverse(ulong number, ulong eylerFunctionValue);
         ulong Pow(ulong number, ulong degree);
         ulong GreatestCommonDivisor(ulong firstNumber, ulong secondNumber);
     }
@@ -45,7 +45,14 @@ namespace Cryptography.Arithmetic.ResidueNumberSystem
             return Multiply(firstNumber, Pow(secondNumber, Module - 2));
         }
 
-        
+
+        public ulong MultiplicativeInverse(ulong number, ulong eylerFunctionValue)
+        {
+            var (_,x,_) = ExtendedEuclideanAlgorithm((long) number, (long) eylerFunctionValue);
+            var inverseNumber = 2 * (long)eylerFunctionValue + x % (long) eylerFunctionValue;
+            return (ulong)inverseNumber;
+        }
+
         public ulong Pow(ulong number, ulong degree)
         {
             ulong result = 1;
@@ -99,19 +106,15 @@ namespace Cryptography.Arithmetic.ResidueNumberSystem
         /// <returns>
         /// d = gcd(a,b)
         /// </returns>
-        public (ulong d, ulong x, ulong y) ExtendedEuclideanAlgorithm(ulong a, ulong b)
+        public (long d, long x, long y) ExtendedEuclideanAlgorithm(long a, long b)
         {
-            ulong x = 0;
-
             if (a == 0)
             {
-                return (b, x, 1);
+                return (b, 0, 1);
             }
             
             var (d,x1,y1) =  ExtendedEuclideanAlgorithm(b % a, a);
-
-            x = y1 - (b / a) * x1;
-            
+            var x = y1 - b / a * x1;
             return (d, x, x1);
         }
 
