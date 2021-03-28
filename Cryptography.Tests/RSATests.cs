@@ -24,6 +24,7 @@ namespace Cryptography.Tests
 
         [Theory]
         [InlineData(2,7,11,37,13,51)]
+        [InlineData(123,11,13,113,17,41)]
         public void RsaShouldEncryptCorrectly(ulong message, uint p, uint q, ulong E,ulong d, ulong cipherMessage)
         {
             //act
@@ -48,6 +49,20 @@ namespace Cryptography.Tests
             var actualDecryptionResult = _rsaCipher.DeCrypt(encryptionResult);
             //assert
             Assert.Equal(expectedMessage, actualDecryptionResult);
+        }
+        
+        [Theory]
+        [InlineData(7500641,9973,9967,37)]
+        [InlineData(2,7,11,37)]
+        [InlineData(123,11,13,113)]
+        [InlineData(123,9973,9967,65537)]
+        public void RsaShouldEncryptAndThenDecryptCorrectly(ulong message, uint p, uint q, ulong E)
+        {
+            //act
+            var actualCipherResult = _rsaCipher.EnCrypt(message, p, q, E);
+            var actualDecryptionResult = _rsaCipher.DeCrypt(actualCipherResult);
+            //assert
+            Assert.Equal(message, actualDecryptionResult);
         }
     }
 }
