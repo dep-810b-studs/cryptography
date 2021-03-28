@@ -23,6 +23,7 @@
     <ItemGroup>
       <ProjectReference Include="..\Cryptography.Algorithms\Cryptography.Algorithms.csproj" />
       <ProjectReference Include="..\Cryptography.Arithmetic\Cryptography.Arithmetic.csproj" />
+      <ProjectReference Include="..\Cryptography.WebInterface\Cryptography.WebInterface.csproj" />
     </ItemGroup>
 
     <ItemGroup>
