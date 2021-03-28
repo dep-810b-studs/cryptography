@@ -25,7 +25,7 @@ namespace Cryptography.WebInterface.Rsa
             var convertedMessage = _messageConvertor.ConvertToLong(message);
             var convertedP = UInt32.Parse(P);
             var convertedQ = UInt32.Parse(Q);
-            var convertedE = _messageConvertor.ConvertToLong(e);
+            var convertedE = UInt64.Parse(e);
             var encryptedMessage = _rsaCipher.EnCrypt(convertedMessage,
                 convertedP, convertedQ, convertedE);
 
@@ -34,9 +34,9 @@ namespace Cryptography.WebInterface.Rsa
 
         public string Decrypt(string message, string N, string D)
         {
-            var convertedMessage = _messageConvertor.ConvertToLong(message);
+            var convertedMessage = UInt64.Parse(message);
             var convertedN = UInt32.Parse(N);
-            var convertedD = UInt32.Parse(D);
+            var convertedD = UInt64.Parse(D);
 
             var encryptionResult = new RSAEncryptionResult
             {
