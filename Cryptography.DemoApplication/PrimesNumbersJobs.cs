@@ -41,7 +41,7 @@ namespace Cryptography.DemoApplication
         private readonly func _calculateEylerFunctionJob = () =>
         {
             uint m = GetNumberFromUser();
-            var functionValue = ResidueNumberSystem.CalculateEylerFunction(m);
+            var functionValue = ResidueNumberSystem.CalculateEylerFunction((int)m);
             Console.WriteLine($" f({m}) = {functionValue}");
         };
         
