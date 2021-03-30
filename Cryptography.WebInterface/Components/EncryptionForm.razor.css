@@ -1,4 +1,13 @@
-﻿.encyption-page{
+﻿.encryption-page{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin: 10px;
+    gap: 10px;
+    width: 50%;
+}
+
+.decryption-page{
     display: flex;
     align-items: center;
     flex-direction: column;

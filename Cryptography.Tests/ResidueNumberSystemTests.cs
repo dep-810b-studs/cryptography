@@ -51,10 +51,10 @@ namespace Cryptography.Tests
         
         [Theory]
         [ClassData(typeof(PrimesNumbersTestData))]
-        public void ReshetoEratosfenaShouldWorkCorrect(uint count, IEnumerable<int> expectedResult)
+        public void ReshetoEratosfenaShouldWorkCorrect(int count, IEnumerable<int> expectedResult)
         {
             //act
-            var numbers = ResidueNumberSystem.GetSimpleNumbersLessThenM(count).ToList();
+            var numbers = _residueNumberSystemUnderTest.GetSimpleNumbersLessThenM(count).ToList();
             //assert
             Assert.Equal(expectedResult, numbers);
         }

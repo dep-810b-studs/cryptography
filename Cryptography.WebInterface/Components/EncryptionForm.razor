@@ -1,10 +1,12 @@
 ﻿@namespace Cryptography.WebInterface.Components  
 @using Cryptography.WebInterface.Rsa
 @using System.ComponentModel.DataAnnotations
+@using Cryptography.Algorithms.RSA
 @inject IJSRuntime JsRuntime;
 @inject IRsaEncryptionSystem EncryptionSystem
+@inject IMessageConvertor Convertor
 
-<div class="encyption-page">
+<div class="encryption-page">
     <h2>Введите текст для шифрования</h2>
     <p>
         <input @bind="message"/>
@@ -15,21 +17,47 @@
     <input @bind="Q"/>
     <h2>Введите открытую экспоненту</h2>
     <input @bind="exponent"/>
+    <Button @onclick="GenerateRandomKey">
+       Сгенерировать случайные p и q 
+    </Button>
     <Button @onclick="Encrypt">
         Зашифровать
     </Button>
+    <h2>Шифротекст</h2>
+    <textarea>@CipherText</textarea>
+</div>
+
+<div class="decryption-page">
+    <h2>Введите текст для расшифровки</h2>
+    <p>
+        <input @bind=@encryptedMessage/>
+    </p>
+    <h2>Введите N</h2>
+    <input @bind=@N/>
+    <h2>Введите закрытую экспоненту</h2>
+    <input @bind=@secretExponent/>
+    <Button @onclick=@Decrypt>
+        Расшифровать
+    </Button>
+    <h2>Исходный текст</h2>
+    <textarea>@SourceText</textarea>
 </div>
 
 @code {
-    [Required]
     private string message;
+    private string encryptedMessage;
     private string P;
     private string Q;
-    private string exponent;
+    private string exponent = "65537";
+    private string CipherText;
+    private string N;
+
+    private string secretExponent;
+    private string SourceText;
     
     private async Task Encrypt()
     {
-        var encryptionResult = string.Empty;
+        (string,ulong) encryptionResult = default;
 
         try
         {
@@ -37,8 +65,45 @@
         }
         catch (Exception e)
         {
+            await JsRuntime.InvokeVoidAsync("alert", e.ToString());
+        }
+        CipherText = encryptionResult.Item1;
+        secretExponent = encryptionResult.Item2.ToString();
+    }
+    
+    private async Task Decrypt()
+    {
+        var decryptionResult = string.Empty;
+        
+        try
+        {
+            decryptionResult = EncryptionSystem.Decrypt(encryptedMessage, N, secretExponent);
+        }
+        catch (Exception e)
+        {
             await JsRuntime.InvokeVoidAsync("alert", e.StackTrace ?? e.Message);
         }
-        Console.WriteLine(encryptionResult);
+
+        SourceText = decryptionResult;
+    }
+    
+    private async Task GenerateRandomKey()
+    {
+        try
+        {
+            var p = EncryptionSystem.GetRandomPrimeNumber(10000, number => number > 900);
+
+            ulong q = EncryptionSystem.GetRandomPrimeNumber(10000,
+                    number => number > 900 && number != (int) p);
+
+            P = p.ToString();
+            Q = q.ToString();
+            N = (p * q).ToString();
+
+        }
+        catch (Exception e)
+        {
+            await JsRuntime.InvokeVoidAsync("alert", e.ToString());
+        }
     }
 }
