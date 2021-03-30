@@ -7,7 +7,7 @@ namespace Cryptography.WebInterface.Rsa
 {
     public interface IRsaEncryptionSystem
     {
-        string Encrypt(string message, string P, string Q, string e);
+        (string, ulong) Encrypt(string message, string P, string Q, string e);
         string Decrypt(string message, string N, string D);
         ulong GetRandomPrimeNumber(int max, Func<int, bool> isNumberValid);
     }
@@ -26,7 +26,7 @@ namespace Cryptography.WebInterface.Rsa
             _residueNumberSystem = residueNumberSystem;
         }
 
-        public string Encrypt(string message, string P, string Q, string e)
+        public (string, ulong) Encrypt(string message, string P, string Q, string e)
         {
             var convertedMessage = _messageConvertor.ConvertToLong(message);
             var convertedP = UInt32.Parse(P);
@@ -35,7 +35,7 @@ namespace Cryptography.WebInterface.Rsa
             var encryptedMessage = _rsaCipher.EnCrypt(convertedMessage,
                 convertedP, convertedQ, convertedE);
 
-            return encryptedMessage.CipherText.ToString();
+            return (encryptedMessage.CipherText.ToString(), encryptedMessage.SecretKey.d);
         }
 
         public string Decrypt(string message, string N, string D)
