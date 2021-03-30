@@ -10,8 +10,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptography.Algorithms", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptography.WebInterface", "Cryptography.WebInterface\Cryptography.WebInterface.csproj", "{1D50AFC4-629E-44FC-9041-0D57EFFBCEBB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sandbox", "Sandbox\Sandbox.csproj", "{55B54A88-61BB-4378-9D51-FB1DBA6CB507}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,9 +36,5 @@ Global
 		{1D50AFC4-629E-44FC-9041-0D57EFFBCEBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1D50AFC4-629E-44FC-9041-0D57EFFBCEBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1D50AFC4-629E-44FC-9041-0D57EFFBCEBB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{55B54A88-61BB-4378-9D51-FB1DBA6CB507}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{55B54A88-61BB-4378-9D51-FB1DBA6CB507}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{55B54A88-61BB-4378-9D51-FB1DBA6CB507}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{55B54A88-61BB-4378-9D51-FB1DBA6CB507}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
