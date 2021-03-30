@@ -8,9 +8,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptography.DemoApplicatio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptography.Algorithms", "Cryptography.Algorithms\Cryptography.Algorithms.csproj", "{9B0BF112-FBB9-4E8A-8E50-3AC3DA8D9525}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptography.Benchmarks", "Cryptography.Benchmarks\Cryptography.Benchmarks.csproj", "{50DC4334-5A75-4B88-85FB-0135B2D7A042}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptography.WebInterface", "Cryptography.WebInterface\Cryptography.WebInterface.csproj", "{1D50AFC4-629E-44FC-9041-0D57EFFBCEBB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sandbox", "Sandbox\Sandbox.csproj", "{55B54A88-61BB-4378-9D51-FB1DBA6CB507}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,13 +34,13 @@ Global
 		{9B0BF112-FBB9-4E8A-8E50-3AC3DA8D9525}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9B0BF112-FBB9-4E8A-8E50-3AC3DA8D9525}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9B0BF112-FBB9-4E8A-8E50-3AC3DA8D9525}.Release|Any CPU.Build.0 = Release|Any CPU
-		{50DC4334-5A75-4B88-85FB-0135B2D7A042}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{50DC4334-5A75-4B88-85FB-0135B2D7A042}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{50DC4334-5A75-4B88-85FB-0135B2D7A042}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{50DC4334-5A75-4B88-85FB-0135B2D7A042}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1D50AFC4-629E-44FC-9041-0D57EFFBCEBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1D50AFC4-629E-44FC-9041-0D57EFFBCEBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1D50AFC4-629E-44FC-9041-0D57EFFBCEBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1D50AFC4-629E-44FC-9041-0D57EFFBCEBB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55B54A88-61BB-4378-9D51-FB1DBA6CB507}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55B54A88-61BB-4378-9D51-FB1DBA6CB507}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55B54A88-61BB-4378-9D51-FB1DBA6CB507}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55B54A88-61BB-4378-9D51-FB1DBA6CB507}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

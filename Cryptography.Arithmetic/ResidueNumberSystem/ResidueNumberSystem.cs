@@ -85,18 +85,27 @@ namespace Cryptography.Arithmetic.ResidueNumberSystem
 
         public ulong CalculateEylerFunction(uint p, uint q) => (p - 1) * (q - 1);
         
-        public static ulong CalculateEylerFunction(ulong N)
+        public static int CalculateEylerFunction(int N)
         {
-            ulong res = N, en = Convert.ToUInt64(Math.Sqrt(N) + 1);
-            for (ulong i = 2; i <= en; i++)
-                if ((N % i) == 0)
+            int result = N;
+            
+            for (var i = 2; i * i <= N; i++)
+            {
+                if (N % i == 0)
                 {
-                    while ((N % i) == 0)
+                    while (N % i == 0)
+                    {
                         N /= i;
-                    res -= (res / i);
+                    }
+
+                    result -= result / i;
                 }
-            if (N > 1) res -= (res / N);
-            return res;
+
+                if (N > 1) 
+                    result -= result / N;
+            }
+
+            return result;
         }
 
         /// <summary>

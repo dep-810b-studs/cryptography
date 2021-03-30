@@ -81,7 +81,7 @@
         }
         catch (Exception e)
         {
-            await JsRuntime.InvokeVoidAsync("alert", e.StackTrace ?? e.Message);
+            await JsRuntime.InvokeVoidAsync("alert", e.ToString());
         }
 
         SourceText = decryptionResult;
@@ -91,9 +91,9 @@
     {
         try
         {
-            var p = EncryptionSystem.GetRandomPrimeNumber(10000, number => number > 900);
+            var p = EncryptionSystem.GetRandomPrimeNumber(50000, number => number > 900);
 
-            ulong q = EncryptionSystem.GetRandomPrimeNumber(10000,
+            ulong q = EncryptionSystem.GetRandomPrimeNumber(50000,
                     number => number > 900 && number != (int) p);
 
             P = p.ToString();

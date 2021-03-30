@@ -32,25 +32,10 @@ namespace Cryptography.Algorithms.RSA
             AssertMessageSizeCorrect(message, _residueNumberSystem.Module);
 
             ulong eylerFunctionValue = _residueNumberSystem.CalculateEylerFunction(p, q);
-            //  var ( _, a,b) = 
-            //       _residueNumberSystem.ExtendedEuclideanAlgorithm(encryptionExponent, eylerFunctionValue);
-            //
-            //  var d = Math.Min(a, b);
-            //  
-            // var decryptionExponent =  d % _residueNumberSystem.Module;
-
+            
             var decryptionExponent = _residueNumberSystem.MultiplicativeInverse(encryptionExponent, eylerFunctionValue);
 
-            Console.WriteLine($"Encrypting.Message = {message}");
-            Console.WriteLine($"Encrypting.p = {p}");
-            Console.WriteLine($"Encrypting.q = {q}");
-            Console.WriteLine($"Encrypting.e = {encryptionExponent}");
-            Console.WriteLine($"Encrypting.d = {decryptionExponent}");
-            Console.WriteLine($"Encrypting.N = {_residueNumberSystem.Module}");
-            
             var cipherText = _residueNumberSystem.Pow(message, encryptionExponent);
-
-            Console.WriteLine($"Encrypting.Cipher Text = {cipherText}");
 
             var encryptionResult = new RSAEncryptionResult()
             {
@@ -64,18 +49,8 @@ namespace Cryptography.Algorithms.RSA
 
         public ulong DeCrypt(RSAEncryptionResult rsaEncryptionResult)
         {
-            //AssertPrimeNumberBitsCountCorrect(rsaEncryptionResult.SecretKey.p);
-            //AssertPrimeNumberBitsCountCorrect(rsaEncryptionResult.SecretKey.p);
-            //AssertEncryptionExponentCorrect(rsaEncryptionResult.PublicKey.E, rsaEncryptionResult.SecretKey.p, rsaEncryptionResult.SecretKey.q);
-
             _residueNumberSystem.Module = rsaEncryptionResult.PublicKey.N;
-            
-            Console.WriteLine($"Decrypting.Cipher Text = {rsaEncryptionResult.CipherText}");
-
             var message = _residueNumberSystem.Pow(rsaEncryptionResult.CipherText, rsaEncryptionResult.SecretKey.d);
-
-            Console.WriteLine($"Decrypting.Message = {message}");
-
             return message;
         }
 
