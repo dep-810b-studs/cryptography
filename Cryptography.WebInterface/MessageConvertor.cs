@@ -41,7 +41,11 @@ namespace Cryptography.WebInterface
 
         public string ConvertToString(ulong message)
         {
-            var messageInBytes = message.ToByteArray();
+            var messageInBytes = message
+                .ToByteArray()
+                .Where(charByte => charByte != 0)
+                .ToArray();
+            
             return Encoding.UTF8.GetString(messageInBytes);
 
             //return message.ToString();
