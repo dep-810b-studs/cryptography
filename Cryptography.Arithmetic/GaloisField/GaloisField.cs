@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Cryptography.Arithmetic.WorkingWithBits;
 
 namespace Cryptography.Arithmetic.GaloisField
 {
@@ -19,11 +20,13 @@ namespace Cryptography.Arithmetic.GaloisField
         /// <param name="number"></param>
         /// <returns></returns>
 
-        public static string ToPotentialForm(byte number) => 
-            Enumerable
+        public static string ToPotentialForm(byte number)
+        {
+            var numberToConvert = new OpenText(number);
+            return Enumerable
                 .Range(0,8)
                 .Reverse()
-                .Where(degree => ((number >> degree) & 1) == 1)
+                .Where(degree => numberToConvert[degree] == 1)
                 .Select(degree => degree switch
                 {
                     0 => "1",
@@ -31,5 +34,6 @@ namespace Cryptography.Arithmetic.GaloisField
                     _ => $"x^{degree}" 
                 })
                 .Aggregate((prev, next) => $"{prev} + {next}");
+        }
     }
 }
