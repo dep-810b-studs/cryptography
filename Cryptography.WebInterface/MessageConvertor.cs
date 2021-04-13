@@ -35,8 +35,6 @@ namespace Cryptography.WebInterface
             return messageInBytes
                 .ToArray()
                 .ToUInt64();
-
-            //return ulong.Parse(message);
         }
 
         public string ConvertToString(ulong message)
@@ -47,8 +45,6 @@ namespace Cryptography.WebInterface
                 .ToArray();
             
             return Encoding.UTF8.GetString(messageInBytes);
-
-            //return message.ToString();
         }
     }
 }
