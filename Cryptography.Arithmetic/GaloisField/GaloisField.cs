@@ -20,20 +20,6 @@ namespace Cryptography.Arithmetic.GaloisField
         /// <param name="number"></param>
         /// <returns></returns>
 
-        public static string ToPotentialForm(byte number)
-        {
-            var numberToConvert = new OpenText(number);
-            return Enumerable
-                .Range(0,8)
-                .Reverse()
-                .Where(degree => numberToConvert[degree] == 1)
-                .Select(degree => degree switch
-                {
-                    0 => "1",
-                    1 => "x",
-                    _ => $"x^{degree}" 
-                })
-                .Aggregate((prev, next) => $"{prev} + {next}");
-        }
+        public static string ToPotentialForm(byte number) => BinaryPolynomial.ToPotentialForm(number, 8);
     }
 }
