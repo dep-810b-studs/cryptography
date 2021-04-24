@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using Cryptography.DemoApplication.Jobs;
 
 namespace Cryptography.DemoApplication
 {
     public static class JobExecutor
     {
-        private static readonly List<string> SupportedJobTypes = new() 
-            {"working-with-bits", "primes-numbers"};
+        private static readonly HashSet<string> SupportedJobTypes = new() 
+            {"working-with-bits", "primes-numbers", "galois-field"};
 
         public static bool TryCreateJobs(string jobsName, out IDemoApplicationJobs demoApplicationJobs)
         {
@@ -21,7 +22,8 @@ namespace Cryptography.DemoApplication
             demoApplicationJobs = jobsName switch
             {
                 "working-with-bits" => new WorkingWithBitsJobs(),
-                "primes-numbers" => new PrimesNumbersJobs()
+                "primes-numbers" => new PrimesNumbersJobs(),
+                "galois-field" => new GaloisFieldJobs()
             };
 
             return true;
