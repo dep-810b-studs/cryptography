@@ -15,5 +15,17 @@ namespace Cryptography.Tests
            //assert
            Assert.Equal(expectedPolynomial, actualPolynomial);
         }
+
+        [Theory]
+        [InlineData(205,217,283,29)]
+        public void MultiplicationInGaliosFieldShouldWorkCorrect(byte firstOperand, byte secondOperand, uint irreduciblePolynomial, byte expectedResult)
+        {
+            //arrange
+            var gfUnderTest = new GaloisField(irreduciblePolynomial);
+            //act
+            var actualResult = gfUnderTest.Multiply(firstOperand, secondOperand);
+            //assert
+            Assert.Equal(expectedResult, actualResult);
+        }
     }
 }
