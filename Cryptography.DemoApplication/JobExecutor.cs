@@ -7,8 +7,7 @@ namespace Cryptography.DemoApplication
 {
     public static class JobExecutor
     {
-        private static readonly Dictionary<string, IDemoApplicationJobs> SupportedJobs;
-
+        public static Dictionary<string, IDemoApplicationJobs> SupportedJobs { get; }
         static JobExecutor()
         {
             var jobsInAssemblies =
@@ -21,17 +20,7 @@ namespace Cryptography.DemoApplication
             SupportedJobs = jobsInAssemblies
                 .ToDictionary(k => k.JobName, v => Activator.CreateInstance(v.Type) as IDemoApplicationJobs);
         }
-        
-        public static bool TryCreateJobs(string jobsName, out IDemoApplicationJobs demoApplicationJobs)
-        {
-            var selectedJobExist = SupportedJobs.TryGetValue(jobsName, out demoApplicationJobs); 
-            
-            if (!selectedJobExist)
-                Console.WriteLine($"These type of jobs({jobsName}) didn't supported... ");
-            
-            return selectedJobExist;
-        }
-        
+
         public static void Run<T>(T jobs) where T : IDemoApplicationJobs
         {
             while (true)

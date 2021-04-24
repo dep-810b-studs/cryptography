@@ -7,10 +7,14 @@ if (args.Length < 1)
 }
 
 var jobsName = args[0];
-var jobsCreated = JobExecutor.TryCreateJobs(jobsName, out var demoApplicationJobs);
-if (jobsCreated)
+
+if (JobExecutor.SupportedJobs.TryGetValue(jobsName, out var demoApplicationJobs))
 {
     JobExecutor.Run(demoApplicationJobs);
+}
+else
+{
+    Console.WriteLine($"These type of jobs({jobsName}) didn't supported... ");
 }
 
 
