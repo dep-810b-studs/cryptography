@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Cryptography.Arithmetic.WorkingWithBits;
-using Microsoft.VisualBasic;
 
 namespace Cryptography.Arithmetic
 {
@@ -14,28 +13,67 @@ namespace Cryptography.Arithmetic
         {
             Value = value;
         }
-
-        public static BinaryPolynomial operator *(BinaryPolynomial firstPolynomial, BinaryPolynomial secondPolynomial)
-        {
-            int result = 0;
-
-            var a = (int)firstPolynomial.Value;
-            var b = (int)secondPolynomial.Value;
-
-            while (a != 0)
-            {
-                result ^= (a & 1) * b;
-                b <<= 1;
-                a >>= 1;
-            }
-
-            
-            return new BinaryPolynomial((uint)result);
-        }
-
-        public OpenText ToOpenText() => new (Value);
         
         public override string ToString() => ToPotentialForm(Value, 32);
+
+        #region Arithmetic Operations
+        public static BinaryPolynomial operator *(BinaryPolynomial firstPolynomial, BinaryPolynomial secondPolynomial)
+        {
+            uint result = 0;
+
+            var firstNumberBits = firstPolynomial.ToOpenText();
+            var secondNumberBits = secondPolynomial.ToOpenText();
+            
+            for (var i = 0; i < firstNumberBits.Length; i++)
+            {
+                for (var j = 0; j < secondNumberBits.Length; j++)
+                {
+                    var shift = i + j;
+                    result ^= (uint)((firstNumberBits[i] & secondNumberBits[j]) << shift);
+                }
+            }
+
+            return result;
+        }
+        public static BinaryPolynomial operator %(BinaryPolynomial polynomial, BinaryPolynomial divisorPolynomial)
+        {
+            if (divisorPolynomial == 0)
+                throw new DivideByZeroException("Divisor polynomial must be not 0");
+            
+            switch ((uint)polynomial, (uint)divisorPolynomial)
+            {
+                case (0,_):
+                case (1,1):
+                    return 0;
+                case (1,_):
+                    return 1;
+            }
+
+            var number = polynomial.ToOpenText();
+            var divisor = divisorPolynomial.ToOpenText();
+            
+            var numberMaxPower = number.GetDegreeOfTwoThatNeighborsOfNumber();
+            var divisorMaxPower = divisor.GetDegreeOfTwoThatNeighborsOfNumber();
+            
+            while (numberMaxPower >= divisorMaxPower)
+            {
+                var shift = (numberMaxPower - divisorMaxPower);
+                number ^= divisor << shift;
+                numberMaxPower = number.GetDegreeOfTwoThatNeighborsOfNumber();
+            }
+            
+            return new BinaryPolynomial(number.Value);
+        }
+
+        #endregion
+        
+        #region Converting from/to other formats
+        public OpenText ToOpenText() => new (Value);
+        public static implicit operator BinaryPolynomial(uint polynomialValue) => new(polynomialValue);
+        public static implicit operator uint(BinaryPolynomial polynomial) => polynomial.Value;
+        public static implicit operator BinaryPolynomial(int polynomialValue) => new((uint)polynomialValue);
+        public static implicit operator BinaryPolynomial(byte polynomialValue) => new((uint)polynomialValue);
+
         public static string ToPotentialForm(uint value, int countBitsInNumber)
         {
             var numberToConvert = new OpenText(value);
@@ -51,8 +89,7 @@ namespace Cryptography.Arithmetic
                 })
                 .Aggregate((prev, next) => $"{prev} + {next}");
         }
-
-        public static implicit operator BinaryPolynomial(uint polynomialValue) => new(polynomialValue);
-
+        
+        #endregion
     }
 }
