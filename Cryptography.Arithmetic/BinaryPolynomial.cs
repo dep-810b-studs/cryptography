@@ -51,5 +51,8 @@ namespace Cryptography.Arithmetic
                 })
                 .Aggregate((prev, next) => $"{prev} + {next}");
         }
+
+        public static implicit operator BinaryPolynomial(uint polynomialValue) => new(polynomialValue);
+
     }
 }
