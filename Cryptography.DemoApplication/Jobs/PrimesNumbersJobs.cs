@@ -3,6 +3,7 @@ using Cryptography.Arithmetic.ResidueNumberSystem;
 
 namespace Cryptography.DemoApplication.Jobs
 {
+    [Job("primes-numbers")]
     public class PrimesNumbersJobs : BaseJobs
     {
         #region Delegates invoking tasks

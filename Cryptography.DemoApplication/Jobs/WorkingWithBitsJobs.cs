@@ -4,6 +4,7 @@ using Cryptography.Arithmetic.WorkingWithBits;
 
 namespace Cryptography.DemoApplication.Jobs
 {
+    [Job("working-with-bits")]
     public class WorkingWithBitsJobs : BaseJobs
     {
         #region Delegates invoking tasks

@@ -1,32 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Cryptography.DemoApplication.Jobs;
 
 namespace Cryptography.DemoApplication
 {
     public static class JobExecutor
     {
-        private static readonly HashSet<string> SupportedJobTypes = new() 
-            {"working-with-bits", "primes-numbers", "galois-field"};
+        private static readonly Dictionary<string, IDemoApplicationJobs> SupportedJobs;
 
+        static JobExecutor()
+        {
+            var jobsInAssemblies =
+                from a in AppDomain.CurrentDomain.GetAssemblies()
+                from t in a.GetTypes()
+                let attributes = t.GetCustomAttributes(typeof(JobAttribute), true)
+                where attributes != null && attributes.Length > 0
+                select new { Type = t, JobName = attributes.Cast<JobAttribute>().First().Name };
+
+            SupportedJobs = jobsInAssemblies
+                .ToDictionary(k => k.JobName, v => Activator.CreateInstance(v.Type) as IDemoApplicationJobs);
+        }
+        
         public static bool TryCreateJobs(string jobsName, out IDemoApplicationJobs demoApplicationJobs)
         {
-            demoApplicationJobs = null;
-                
-            if (!SupportedJobTypes.Contains(jobsName))
-            {
-                Console.WriteLine($"These type of jobs({jobsName}) didn't supported... ");
-                return false;
-            }
+            var selectedJobExist = SupportedJobs.TryGetValue(jobsName, out demoApplicationJobs); 
             
-            demoApplicationJobs = jobsName switch
-            {
-                "working-with-bits" => new WorkingWithBitsJobs(),
-                "primes-numbers" => new PrimesNumbersJobs(),
-                "galois-field" => new GaloisFieldJobs()
-            };
-
-            return true;
+            if (!selectedJobExist)
+                Console.WriteLine($"These type of jobs({jobsName}) didn't supported... ");
+            
+            return selectedJobExist;
         }
         
         public static void Run<T>(T jobs) where T : IDemoApplicationJobs
