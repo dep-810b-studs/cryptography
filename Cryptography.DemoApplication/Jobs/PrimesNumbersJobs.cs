@@ -1,7 +1,7 @@
 ﻿using System;
 using Cryptography.Arithmetic.ResidueNumberSystem;
 
-namespace Cryptography.DemoApplication
+namespace Cryptography.DemoApplication.Jobs
 {
     public class PrimesNumbersJobs : BaseJobs
     {

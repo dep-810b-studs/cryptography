@@ -2,7 +2,7 @@
 using System.Linq;
 using Cryptography.Arithmetic.WorkingWithBits;
 
-namespace Cryptography.DemoApplication
+namespace Cryptography.DemoApplication.Jobs
 {
     public class WorkingWithBitsJobs : BaseJobs
     {
