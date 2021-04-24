@@ -82,32 +82,34 @@ namespace Cryptography.Arithmetic.WorkingWithBits
             _text = direction switch
             {
                 ShiftDirection.Left => _text << shift | _text >> (P - shift),
-                
                 ShiftDirection.Right => _text >> shift | _text << (P - shift)
             };
 
             return this;
         }
 
-        public int GetDegreeOfTwoThatNeighborsOfNumber()
-        {
-            var result = 0;
-            uint textCopy = _text;
-
-            while (textCopy > 0)
-            {
-                textCopy >>= 1;
-                result++;
-            }
-
-            return result - 1;
-        }
-        
+        public int GetDegreeOfTwoThatNeighborsOfNumber() => (int)GetNumberLenInBits() - 1;
         public int FindMaxTwoDegreeThatDivisibleByNumber()
         {
             return _multiplyDeBruijnBitPosition2[(((~_text + 1) & _text) * 0x077CB531U) >> 27];
         }
 
+        public uint Length => GetNumberLenInBits();
+
+        private uint GetNumberLenInBits()
+        {
+            uint countBits = 0;
+            var numberCopy = _text;
+
+            while (numberCopy > 0)
+            {
+                numberCopy >>= 1;
+                countBits++;
+            }
+
+            return countBits;
+        }
+        
         private readonly int[] _multiplyDeBruijnBitPosition2 = 
         {
             0, 1, 28, 2, 29, 14, 24, 3, 30, 22, 20, 15, 25, 17, 4, 8,
@@ -122,6 +124,20 @@ namespace Cryptography.Arithmetic.WorkingWithBits
                 throw new ArgumentException(
                     $"The argument {nameof(bitNumber)} should be correct bit number (equal or more then zero and less then {P}) but found {bitNumber}");
         }
+
+        #endregion
+
+        #region Bitwise Operators Overriding
+
+        public static OpenText operator <<(OpenText number, int shift) => number.Value << shift;
+        public static OpenText operator ^(OpenText firstNumber, OpenText secondNumber) =>
+            firstNumber.Value ^ secondNumber.Value;
+
+        #endregion
+
+        #region Implicits
+
+        public static implicit operator OpenText(uint number) => new((uint)number);
 
         #endregion
     }
