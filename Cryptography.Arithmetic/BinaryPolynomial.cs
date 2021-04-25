@@ -16,7 +16,46 @@ namespace Cryptography.Arithmetic
         
         public override string ToString() => ToPotentialForm(Value, 32);
 
+        public BinaryPolynomial Copy() => new (Value);
+        
+        public static (BinaryPolynomial d, BinaryPolynomial x, BinaryPolynomial y) ExtendedEuclideanAlgorithm(
+            BinaryPolynomial a, BinaryPolynomial b)
+        {
+            if (b == Zero)
+            {
+                return (a, 1, 0);
+            }
+
+            BinaryPolynomial x1 = 1, y1 = 0, x2 = 0, y2 =1;
+            
+            while (b > 0)
+            {
+                var q = a % b;
+
+                BinaryPolynomial t;
+                
+                t = b.Copy();
+                b = a % b;
+                a = t.Copy();
+                
+                t = x2.Copy();
+                x2 = x1 - q * x2;
+                x1 = t.Copy();
+                
+                t = y2.Copy();
+                y2 = y1 - q * y2;
+                y1 = t.Copy();
+            }
+            
+            return (a, y1, x1);
+        }
+        
         #region Arithmetic Operations
+        public static BinaryPolynomial operator +(BinaryPolynomial firstPolynomial, BinaryPolynomial secondPolynomial) =>
+            firstPolynomial.Value ^ secondPolynomial.Value;
+        public static BinaryPolynomial operator -(BinaryPolynomial firstPolynomial, BinaryPolynomial secondPolynomial) =>
+            firstPolynomial.Value ^ secondPolynomial.Value;
+
         public static BinaryPolynomial operator *(BinaryPolynomial firstPolynomial, BinaryPolynomial secondPolynomial)
         {
             uint result = 0;
@@ -35,6 +74,7 @@ namespace Cryptography.Arithmetic
 
             return result;
         }
+        
         public static BinaryPolynomial operator %(BinaryPolynomial polynomial, BinaryPolynomial divisorPolynomial)
         {
             if (divisorPolynomial == 0)
@@ -73,6 +113,7 @@ namespace Cryptography.Arithmetic
         public static implicit operator uint(BinaryPolynomial polynomial) => polynomial.Value;
         public static implicit operator BinaryPolynomial(int polynomialValue) => new((uint)polynomialValue);
         public static implicit operator BinaryPolynomial(byte polynomialValue) => new((uint)polynomialValue);
+        public static implicit operator byte(BinaryPolynomial polynomialValue) => (byte)polynomialValue.Value;
 
         public static string ToPotentialForm(uint value, int countBitsInNumber)
         {
@@ -91,5 +132,15 @@ namespace Cryptography.Arithmetic
         }
         
         #endregion
+
+        public override bool Equals(object? obj)
+        {
+            if (obj is BinaryPolynomial binaryPolynomial)
+                return Value == binaryPolynomial.Value;
+            
+            return base.Equals(obj);
+        }
+
+        public static BinaryPolynomial Zero => new(0);
     }
 }

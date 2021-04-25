@@ -32,5 +32,18 @@ namespace Cryptography.Tests
             //assert
             Assert.Equal(expectedResult.Value, actualResult.Value);
         }
+        
+        [Theory]
+        [InlineData(80,20,1,0,20)]
+        public void ExtendedEuclideanAlgorithmShouldWorkCorrect(byte a, byte b, 
+            BinaryPolynomial expectedX, BinaryPolynomial expectedY, BinaryPolynomial expectedGCD)
+        {
+            //act
+            var (actualGCD, actualX, actualY) = BinaryPolynomial.ExtendedEuclideanAlgorithm(a, b);
+            //assert
+            Assert.Equal(expectedX, actualX);
+            Assert.Equal(expectedY, actualY);
+            Assert.Equal(expectedGCD, actualGCD);
+        }
     }
 }
