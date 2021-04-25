@@ -26,12 +26,12 @@ namespace Cryptography.Arithmetic
                 return (a, 1, 0);
             }
 
-            BinaryPolynomial x1 = 1, y1 = 0, x2 = 0, y2 =1;
+            BinaryPolynomial x1 = One, y1 = Zero, x2 = Zero, y2 = One;
             
             while (b > 0)
             {
-                var q = a % b;
-
+                var q = a / b;
+            
                 BinaryPolynomial t;
                 
                 t = b.Copy();
@@ -47,7 +47,7 @@ namespace Cryptography.Arithmetic
                 y1 = t.Copy();
             }
             
-            return (a, y1, x1);
+            return (a, x1, y1);
         }
         
         #region Arithmetic Operations
@@ -77,7 +77,7 @@ namespace Cryptography.Arithmetic
         
         public static BinaryPolynomial operator %(BinaryPolynomial polynomial, BinaryPolynomial divisorPolynomial)
         {
-            if (divisorPolynomial == 0)
+            if (divisorPolynomial == Zero)
                 throw new DivideByZeroException("Divisor polynomial must be not 0");
             
             switch ((uint)polynomial, (uint)divisorPolynomial)
@@ -89,22 +89,43 @@ namespace Cryptography.Arithmetic
                     return 1;
             }
 
-            var number = polynomial.ToOpenText();
-            var divisor = divisorPolynomial.ToOpenText();
-            
-            var numberMaxPower = number.GetDegreeOfTwoThatNeighborsOfNumber();
-            var divisorMaxPower = divisor.GetDegreeOfTwoThatNeighborsOfNumber();
-            
-            while (numberMaxPower >= divisorMaxPower)
-            {
-                var shift = (numberMaxPower - divisorMaxPower);
-                number ^= divisor << shift;
-                numberMaxPower = number.GetDegreeOfTwoThatNeighborsOfNumber();
-            }
-            
-            return new BinaryPolynomial(number.Value);
+            var (_, result) = Divide(polynomial, divisorPolynomial);
+            return result;
         }
 
+        public static BinaryPolynomial operator /(BinaryPolynomial polynomial, BinaryPolynomial divisorPolynomial)
+        {
+            if (divisorPolynomial == Zero)
+                throw new DivideByZeroException("Divisor polynomial must be not 0");
+
+            if (polynomial.Value is 0 or 1)
+                return Zero;
+
+            if (divisorPolynomial == One)
+                return polynomial;
+
+            var (result, _) = Divide(polynomial, divisorPolynomial);
+            return result;
+        }
+
+
+        private static (BinaryPolynomial quotient, BinaryPolynomial remainder) Divide(BinaryPolynomial polynomial, BinaryPolynomial divisorPolynomial)
+        {
+            var result = Zero.ToOpenText();
+
+            var number = polynomial.ToOpenText();
+            var divisor = divisorPolynomial.ToOpenText();
+
+            while (number.Length >= divisor.Length)
+            {
+                var shift = (int)(number.Length - divisor.Length);
+                number ^= divisor << shift;
+                result ^= One.ToOpenText() << shift;
+            }
+            
+            return (new BinaryPolynomial(result.Value), new BinaryPolynomial(number.Value));
+        }
+        
         #endregion
         
         #region Converting from/to other formats
@@ -138,9 +159,10 @@ namespace Cryptography.Arithmetic
             if (obj is BinaryPolynomial binaryPolynomial)
                 return Value == binaryPolynomial.Value;
             
-            return base.Equals(obj);
+            return false;
         }
 
         public static BinaryPolynomial Zero => new(0);
+        public static BinaryPolynomial One => new(1);
     }
 }
