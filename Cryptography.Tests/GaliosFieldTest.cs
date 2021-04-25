@@ -18,6 +18,8 @@ namespace Cryptography.Tests
 
         [Theory]
         [InlineData(205,217,283,29)]
+        [InlineData(137,15,283,182)]
+        [InlineData(137,15,287,170)]
         public void MultiplicationInGaliosFieldShouldWorkCorrect(byte firstOperand, byte secondOperand, uint irreduciblePolynomial, byte expectedResult)
         {
             //arrange
