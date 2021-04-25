@@ -19,6 +19,7 @@ namespace Cryptography.Tests
         [Theory]
         [InlineData(205,217,283,29)]
         [InlineData(137,15,283,182)]
+        [InlineData(123, 34, 283, 15)]
         [InlineData(137,15,287,170)]
         public void MultiplicationInGaliosFieldShouldWorkCorrect(byte firstOperand, byte secondOperand, uint irreduciblePolynomial, byte expectedResult)
         {
@@ -28,6 +29,24 @@ namespace Cryptography.Tests
             var actualResult = gfUnderTest.Multiply(firstOperand, secondOperand);
             //assert
             Assert.Equal(expectedResult, actualResult);
+        }
+
+        [Theory]
+        [InlineData(35, MultiplicativeInverseCalculationWay.Exponentiation,241)]
+        [InlineData(35, MultiplicativeInverseCalculationWay.ExtendedEuclideanAlgorithm,241)]
+        [InlineData(203, MultiplicativeInverseCalculationWay.Exponentiation,4)]
+        [InlineData(203, MultiplicativeInverseCalculationWay.ExtendedEuclideanAlgorithm,4)]
+        public void MultiplicativeInverseShouldBeCalculationCorrect(byte number, MultiplicativeInverseCalculationWay way,
+            byte expectedInverse)
+        {
+            //arrange
+            var gfUnderTest = new GaloisField();
+            
+            //act
+            var actualInverse = gfUnderTest.MultiplicativeInverse(number, way);
+            
+            //assert
+            Assert.Equal(expectedInverse, actualInverse);
         }
     }
 }
