@@ -1,5 +1,5 @@
-﻿using Xunit;
-using Cryptography.WebInterface;
+﻿using Cryptography.Algorithms.Utils;
+using Xunit;
 
 namespace Cryptography.Tests
 {

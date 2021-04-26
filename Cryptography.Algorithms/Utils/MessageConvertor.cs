@@ -3,12 +3,15 @@ using System.Linq;
 using System.Text;
 using Cryptography.Algorithms;
 
-namespace Cryptography.WebInterface
+namespace Cryptography.Algorithms.Utils
 {
     public interface IMessageConvertor
     {
         ulong ConvertToLong(string message);
         string ConvertToString(ulong message);
+
+        byte[] ConvertToBytes(string message, uint blockSize);
+        string ConvertToString(byte[] message);
     }
     
     public class MessageConvertor : IMessageConvertor
@@ -45,6 +48,16 @@ namespace Cryptography.WebInterface
                 .ToArray();
             
             return Encoding.UTF8.GetString(messageInBytes);
+        }
+
+        public byte[] ConvertToBytes(string message, uint blockSize)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string ConvertToString(byte[] message)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Linq;
 using Cryptography.Algorithms.RSA;
+using Cryptography.Algorithms.Utils;
 using Cryptography.Arithmetic.ResidueNumberSystem;
 
-namespace Cryptography.WebInterface.Rsa
+namespace Cryptography.Algorithms.RSA
 {
     public interface IRsaEncryptionSystem
     {
@@ -12,7 +13,7 @@ namespace Cryptography.WebInterface.Rsa
         ulong GetRandomPrimeNumber(int max, Func<int, bool> isNumberValid);
     }
 
-    internal class RsaEncryptionSystem : IRsaEncryptionSystem
+    public class RsaEncryptionSystem : IRsaEncryptionSystem
     {
         private readonly IMessageConvertor _messageConvertor;
         private readonly IRSACipher _rsaCipher;

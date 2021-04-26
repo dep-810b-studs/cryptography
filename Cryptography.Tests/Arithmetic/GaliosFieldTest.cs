@@ -48,5 +48,17 @@ namespace Cryptography.Tests
             //assert
             Assert.Equal(expectedInverse, actualInverse);
         }
+
+        [Theory]
+        [InlineData(120, 0b100011101)]
+        public void MappingToAnotherFieldShouldWorkCorrect(byte number, uint irreduciblePolynomial)
+        {
+            //arrange
+            var gfUnderTest = new GaloisField();
+            //act
+            var inAnotherField = gfUnderTest.ToAnotherField(number, irreduciblePolynomial);
+            var inOriginalField = gfUnderTest.ToAnotherField(number, 0x11b);
+            //assert
+        }
     }
 }
