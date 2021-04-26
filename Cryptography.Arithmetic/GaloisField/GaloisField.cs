@@ -13,7 +13,7 @@ namespace Cryptography.Arithmetic.GaloisField
             IrreduciblePolynomial = m;
         }
 
-        public BinaryPolynomial IrreduciblePolynomial { get; init; }
+        public BinaryPolynomial IrreduciblePolynomial { get; set; }
 
         public byte Multiply(byte firstNumber, byte secondNumber)
         {
@@ -55,7 +55,15 @@ namespace Cryptography.Arithmetic.GaloisField
                 _ => throw new ArgumentOutOfRangeException()
             };
         }
-        
+
+        public byte ToAnotherField(byte number, uint fieldIrreduciblePolynomial)
+        {
+            BinaryPolynomial numberPolynomial = number;
+            BinaryPolynomial irreduciblePolynomial = fieldIrreduciblePolynomial;
+
+            return numberPolynomial % irreduciblePolynomial;
+        }
+
         private byte MultiplicativeInverseUsingExtendedGCD(byte number)
         {
             var (_, inverse, _) = BinaryPolynomial.ExtendedEuclideanAlgorithm(number, IrreduciblePolynomial);
