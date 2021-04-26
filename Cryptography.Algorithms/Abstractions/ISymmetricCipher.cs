@@ -2,7 +2,7 @@
 {
     public interface ISymmetricCipher
     {
-        byte[] EnCrypt(byte[] openText, byte[] key);
-        byte[] DeCrypt(byte[] encryptedText, byte[] key);
+        byte[] Encrypt(byte[] openText, byte[] key);
+        byte[] Decrypt(byte[] encryptedText, byte[] key);
     }
 }
