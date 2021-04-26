@@ -108,16 +108,6 @@ namespace Cryptography.DemoApplication.Jobs
         
         #endregion
 
-        #region Utils
-
-        private static uint GetNumberFromUser(string textToUser = null)
-        {
-            Console.WriteLine(textToUser ?? "Введите целое число m :");
-            return UInt32.Parse(Console.ReadLine());
-        }
-
-        #endregion
-
         public PrimesNumbersJobs()
         {
             Actions = new []
