@@ -8,10 +8,23 @@ namespace Cryptography.DemoApplication
         protected Delegate[] Actions;
         public virtual Delegate GetJob(int jobNumber)
         {
-            if (jobNumber is < 1 or > 5)
+            if (jobNumber < 1 || jobNumber > Actions.Length)
                 throw new ArgumentOutOfRangeException(nameof(jobNumber),$"There is no task with number {jobNumber}");
 
             return Actions[jobNumber-1];
         }
+        
+        #region Utils
+
+        protected static uint GetNumberFromUser(string textToUser = null, string numberType = "uint")
+        {
+            Console.WriteLine(textToUser ?? "Введите целое число m :");
+            return ParseNeededType(Console.ReadLine(), numberType);
+        }
+        
+        protected static uint ParseNeededType(string number, string type) =>
+            type == "byte" ? byte.Parse(number) : uint.Parse(number);
+
+        #endregion
     }
 }
