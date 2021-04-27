@@ -60,7 +60,8 @@ namespace Cryptography.Tests
             var gfUnderTest = new GaloisField();
             //act
             var inAnotherField = gfUnderTest.ToAnotherField(number, irreduciblePolynomial);
-            var inOriginalField = gfUnderTest.ToAnotherField(number, 0x11b);
+            gfUnderTest.IrreduciblePolynomial = irreduciblePolynomial;
+            var inOriginalField = gfUnderTest.ToAnotherField(inAnotherField, 0x11b);
             //assert
             Assert.Equal(number, inOriginalField);
         }
