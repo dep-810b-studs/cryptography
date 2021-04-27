@@ -25,6 +25,18 @@ namespace Cryptography.Arithmetic.GaloisField
 
             return multiplicationByModule;
         }
+        
+        public byte Divide(byte firstNumber, byte secondNumber)
+        {
+            BinaryPolynomial firstNumberPolynomial = firstNumber;
+            BinaryPolynomial secondNumberPolynomial = secondNumber;
+            BinaryPolynomial secondNumberPolynomialInverse = MultiplicativeInverseUsingExponentiation(secondNumberPolynomial)
+
+            var multiplicationResult = firstNumberPolynomial * secondNumberPolynomialInverse;
+            var multiplicationByModule = multiplicationResult % IrreduciblePolynomial;
+
+            return multiplicationByModule;
+        }
 
         
         public byte Pow(byte number, byte exponent)
@@ -54,6 +66,42 @@ namespace Cryptography.Arithmetic.GaloisField
                 MultiplicativeInverseCalculationWay.Exponentiation => MultiplicativeInverseUsingExponentiation(number),
                 _ => throw new ArgumentOutOfRangeException()
             };
+        }
+
+
+        public (BinaryPolynomial d, BinaryPolynomial x, BinaryPolynomial y) ExtendedEuclideanAlgorithm(
+            BinaryPolynomial a, BinaryPolynomial b)
+        {
+            if (b == BinaryPolynomial.Zero)
+            {
+                return (a, 1, 0);
+            }
+
+            var x1 = BinaryPolynomial.One;
+            var y1 = BinaryPolynomial.Zero;
+            var x2 = BinaryPolynomial.Zero;
+            var y2 = BinaryPolynomial.One;
+            
+            while (b > 0)
+            {
+                var q = Divide(a,b);
+            
+                BinaryPolynomial t;
+                
+                t = b.Copy();
+                b = a % b;
+                a = t.Copy();
+                
+                t = x2.Copy();
+                x2 = x1 - Multiply(q, x2);
+                x1 = t.Copy();
+                
+                t = y2.Copy();
+                y2 = y1 - Multiply(q, y2);
+                y1 = t.Copy();
+            }
+            
+            return (a, x1, y1);
         }
 
         public byte ToAnotherField(byte number, uint fieldIrreduciblePolynomial)
