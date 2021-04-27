@@ -25,12 +25,20 @@ namespace Cryptography.DemoApplication
         {
             while (true)
             {
-                Console.WriteLine("Please, enter task number (q to exit)");
+                Console.WriteLine("Please, enter task number (h to help, q to exit)");
                 var userChoice = Console.ReadLine();
 
                 if (userChoice == "q")
                     return;
 
+                switch (userChoice)
+                {
+                    case "q": return;
+                    case "h":
+                        Console.WriteLine(jobs.Help());
+                        continue;
+                }
+                
                 if(!Int32.TryParse(userChoice, out var jobNumber))
                 {
                     Console.WriteLine("Entered symbols cant be parsed as ints");
