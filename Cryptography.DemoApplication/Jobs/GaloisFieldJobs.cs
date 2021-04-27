@@ -151,10 +151,13 @@ namespace Cryptography.DemoApplication.Jobs
         {
             while (true)
             {
+                var fromIrreduciblePolynmial = GetNumberFromUser("Отображение между полями Галуа. Введите неприводимый полином для исходного поля GF256:");
+                
                 var number = (byte)GetNumberFromUser("Введите многочлен(в десятичной СС)", "byte");
-                var irreduciblePolynomial = GetNumberFromUser("Введите неприводимый полином поля, в которое нужно установить соответствие:");
+                var toIrreduciblePolynomial = GetNumberFromUser("Введите неприводимый полином поля, в которое нужно установить соответствие:");
 
-                var mappingResult = GaloisField.ToAnotherField(number, irreduciblePolynomial);
+                _galoisField.IrreduciblePolynomial = fromIrreduciblePolynmial;
+                var mappingResult = _galoisField.ToAnotherField(number, toIrreduciblePolynomial);
                 
                 Console.WriteLine($"{number} -> {mappingResult}");
                 Console.WriteLine($"{GaloisField.ToPotentialForm(number)} -> {GaloisField.ToPotentialForm(mappingResult)}");
