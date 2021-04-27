@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Reflection;
 
 namespace Cryptography.DemoApplication
 {
@@ -24,6 +26,12 @@ namespace Cryptography.DemoApplication
         
         protected static uint ParseNeededType(string number, string type) =>
             type == "byte" ? byte.Parse(number) : uint.Parse(number);
+
+        public string Help() =>
+            Actions
+                .Select((action, actionNumber) => $"{action.GetMethodInfo().Name} - {actionNumber + 1}")
+                .Aggregate((current, next) => $"{current}\n{next}");
+        
 
         #endregion
     }
