@@ -58,10 +58,8 @@ namespace Cryptography.Arithmetic.GaloisField
 
         public byte ToAnotherField(byte number, uint fieldIrreduciblePolynomial)
         {
-            BinaryPolynomial numberPolynomial = number;
-            BinaryPolynomial irreduciblePolynomial = fieldIrreduciblePolynomial;
-
-            return numberPolynomial % irreduciblePolynomial;
+            uint numberInAnotherField = (number + IrreduciblePolynomial.Value)  % fieldIrreduciblePolynomial;
+            return (byte)numberInAnotherField;
         }
 
         private byte MultiplicativeInverseUsingExtendedGCD(byte number)

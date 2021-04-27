@@ -51,6 +51,9 @@ namespace Cryptography.Tests
 
         [Theory]
         [InlineData(120, 0b100011101)]
+        [InlineData(255, 0b100011101)]
+        [InlineData(1, 0b100011101)]
+        [InlineData(0, 0b100011101)]
         public void MappingToAnotherFieldShouldWorkCorrect(byte number, uint irreduciblePolynomial)
         {
             //arrange
@@ -59,6 +62,7 @@ namespace Cryptography.Tests
             var inAnotherField = gfUnderTest.ToAnotherField(number, irreduciblePolynomial);
             var inOriginalField = gfUnderTest.ToAnotherField(number, 0x11b);
             //assert
+            Assert.Equal(number, inOriginalField);
         }
     }
 }
