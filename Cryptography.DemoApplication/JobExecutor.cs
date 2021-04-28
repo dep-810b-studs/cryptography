@@ -21,7 +21,7 @@ namespace Cryptography.DemoApplication
                 .ToDictionary(k => k.JobName, v => Activator.CreateInstance(v.Type) as IDemoApplicationJobs);
         }
 
-        public static void Run<T>(T jobs) where T : IDemoApplicationJobs
+        public static void Run(IDemoApplicationJobs jobs)
         {
             while (true)
             {
