@@ -30,7 +30,8 @@ namespace Cryptography.Arithmetic.GaloisField
         {
             BinaryPolynomial firstNumberPolynomial = firstNumber;
             BinaryPolynomial secondNumberPolynomial = secondNumber;
-            BinaryPolynomial secondNumberPolynomialInverse = MultiplicativeInverseUsingExponentiation(secondNumberPolynomial)
+            BinaryPolynomial secondNumberPolynomialInverse =
+                MultiplicativeInverseUsingExponentiation(secondNumberPolynomial);
 
             var multiplicationResult = firstNumberPolynomial * secondNumberPolynomialInverse;
             var multiplicationByModule = multiplicationResult % IrreduciblePolynomial;
