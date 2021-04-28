@@ -1,9 +1,15 @@
 ﻿using System;
+using System.Linq;
 using Cryptography.DemoApplication;
 
 if (args.Length < 1)
 {
-    Console.WriteLine("You should specify tasks type to run application");
+    var possibleArguments = JobExecutor.SupportedJobs
+        .Select(supportedJob => supportedJob.Key)
+        .Aggregate((prev, next) => $"{prev}\n{next}");
+    Console.WriteLine("You should specify tasks type to run application. Possible arguments:");
+    Console.WriteLine(possibleArguments);
+    return;
 }
 
 var jobsName = args[0];
