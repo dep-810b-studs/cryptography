@@ -1,4 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Cryptography.Algorithms.Symmetric;
 using Cryptography.Arithmetic.GaloisField;
 
 namespace Cryptography.Algorithms.Rijandel
@@ -11,6 +14,13 @@ namespace Cryptography.Algorithms.Rijandel
     internal class RijandelUtils : IRijandelUtils
     {
         private readonly GaloisField _galoisField = new ();
+
+        private readonly Dictionary<CipherBlockSize, int> _blockSizeCountBytes = new()
+        {
+            [CipherBlockSize.Small] = 16,
+            [CipherBlockSize.Middle] = 24,
+            [CipherBlockSize.Big] = 32,
+        };
         
         public byte[] CreateSBox()
         {
@@ -33,5 +43,15 @@ namespace Cryptography.Algorithms.Rijandel
             result[0] = 99;
             return result;
         }
+        
+        public byte[] GenerateRandomKey(CipherBlockSize cipherBlockSize)
+        {
+            var random = new Random();
+            var keyLength = _blockSizeCountBytes[cipherBlockSize];
+            var randomKey = new byte[keyLength];
+            random.NextBytes(randomKey);
+            return randomKey;
+        }
+        
     }
 }
