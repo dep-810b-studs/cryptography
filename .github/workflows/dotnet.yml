@@ -15,7 +15,7 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build
     - name: Test
       env:
         TEST_PROJECT_NAME: Cryptography.Tests
@@ -24,7 +24,7 @@ jobs:
         export PATH="$PATH:/root/.dotnet/tools"
         dotnet tool install --global coverlet.console
         coverlet "./$TEST_PROJECT_NAME/$PATH_TO_ASSEMBLY/$TEST_PROJECT_NAME.dll" --target "dotnet" --targetargs "test ./$TEST_PROJECT_NAME/$TEST_PROJECT_NAME.csproj --no-build" --merge-with ./coverage.json
-        dotnet test --no-build --verbosity normal
+        dotnet test  --verbosity normal
   functional_tests:
     name: Functional tests for demo app
     runs-on: ubuntu-latest
