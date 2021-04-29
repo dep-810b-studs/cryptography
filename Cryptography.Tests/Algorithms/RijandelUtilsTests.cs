@@ -5,8 +5,6 @@ namespace Cryptography.Tests
 {
     public class RijandelUtilsTests
     {
-        private readonly IRijandelUtils _rijandelUtilsUnderTest = new RijandelUtils();
-        
         [Fact]
         public void GenerationSBoxShouldWorkCorrect()
         {
@@ -33,7 +31,7 @@ namespace Cryptography.Tests
             };
 
             //act
-            var actualSBox = _rijandelUtilsUnderTest.CreateSBox();
+            var actualSBox = RijandelUtils.CreateSBox();
             //assert
             Assert.Equal(expectedSBox, actualSBox);
         }
@@ -64,7 +62,7 @@ namespace Cryptography.Tests
             };
 
             //act
-            var actualSBox = _rijandelUtilsUnderTest.CreateInversedSBox();
+            var actualSBox = RijandelUtils.CreateInversedSBox();
             //assert
             Assert.Equal(expectedSBox, actualSBox);
         }

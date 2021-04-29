@@ -6,25 +6,18 @@ using Cryptography.Arithmetic.GaloisField;
 
 namespace Cryptography.Algorithms.Rijandel
 {
-    internal interface IRijandelUtils
+    internal class RijandelUtils
     {
-        byte[] CreateSBox();
-        byte[] CreateInversedSBox(byte[] sBox = null);
-        byte[] GenerateRandomKey(CipherBlockSize cipherBlockSize);
-    }
-    
-    internal class RijandelUtils : IRijandelUtils
-    {
-        private readonly GaloisField _galoisField = new ();
+        private static readonly GaloisField _galoisField = new ();
 
-        private readonly Dictionary<CipherBlockSize, int> _blockSizeCountBytes = new()
+        public static readonly Dictionary<CipherBlockSize, RijandelMode> RijandelModes = new()
         {
-            [CipherBlockSize.Small] = 16,
-            [CipherBlockSize.Middle] = 24,
-            [CipherBlockSize.Big] = 32,
+            [CipherBlockSize.Small] = new (CipherBlockSize.Small, 16,10),
+            [CipherBlockSize.Middle] = new (CipherBlockSize.Small, 24,12),
+            [CipherBlockSize.Big] = new (CipherBlockSize.Small, 32,14),
         };
         
-        public byte[] CreateSBox()
+        public static byte[] CreateSBox()
         {
             var result = new byte[256];
             
@@ -45,7 +38,7 @@ namespace Cryptography.Algorithms.Rijandel
             return result;
         }
 
-        public byte[] CreateInversedSBox(byte[] sBox = null)
+        public static byte[] CreateInversedSBox(byte[] sBox = null)
         {
             sBox ??= CreateSBox();
             var insersedSBox = new byte[sBox.Length];
@@ -58,10 +51,10 @@ namespace Cryptography.Algorithms.Rijandel
             return insersedSBox;
         }
 
-        public byte[] GenerateRandomKey(CipherBlockSize cipherBlockSize)
+        public static byte[] GenerateRandomKey(CipherBlockSize cipherBlockSize)
         {
             var random = new Random();
-            var keyLength = _blockSizeCountBytes[cipherBlockSize];
+            var keyLength = RijandelModes[cipherBlockSize].BlockSizeCountBytes;
             var randomKey = new byte[keyLength];
             random.NextBytes(randomKey);
             return randomKey;
