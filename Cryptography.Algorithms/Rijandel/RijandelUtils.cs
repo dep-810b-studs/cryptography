@@ -27,14 +27,16 @@ namespace Cryptography.Algorithms.Rijandel
         {
             var result = new byte[256];
             
-            for (byte i = 1; i <= 255; i++)
+            for (int i = 1; i < 256; i++)
             {
-                var MultiplicativeInversed = _galoisField.MultiplicativeInverse(i, MultiplicativeInverseCalculationWay.Exponentiation);
+                var MultiplicativeInversed = _galoisField.MultiplicativeInverse((byte)i, MultiplicativeInverseCalculationWay.Exponentiation);
+                
                 for (var k = 0; k < 5; k++)
                 {
                     result[i] ^= MultiplicativeInversed;
                     MultiplicativeInversed = (byte)((MultiplicativeInversed << 1) | (MultiplicativeInversed >> 7));
                 }
+                
                 result[i] ^= 99;
             }
             
