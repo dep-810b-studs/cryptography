@@ -9,6 +9,7 @@ namespace Cryptography.Algorithms.Rijandel
     internal interface IRijandelUtils
     {
         byte[] CreateSBox();
+        byte[] CreateInversedSBox(byte[] sBox = null);
         byte[] GenerateRandomKey(CipherBlockSize cipherBlockSize);
     }
     
@@ -43,7 +44,20 @@ namespace Cryptography.Algorithms.Rijandel
             result[0] = 0x63;
             return result;
         }
-        
+
+        public byte[] CreateInversedSBox(byte[] sBox = null)
+        {
+            sBox ??= CreateSBox();
+            var insersedSBox = new byte[sBox.Length];
+
+            for (int i = 0; i < sBox.Length; i++)
+            {
+                insersedSBox[sBox[i]] = (byte)i;
+            }
+
+            return insersedSBox;
+        }
+
         public byte[] GenerateRandomKey(CipherBlockSize cipherBlockSize)
         {
             var random = new Random();
