@@ -9,6 +9,7 @@ namespace Cryptography.Algorithms.Rijandel
     internal interface IRijandelUtils
     {
         byte[] CreateSBox();
+        byte[] GenerateRandomKey(CipherBlockSize cipherBlockSize);
     }
     
     internal class RijandelUtils : IRijandelUtils
@@ -25,22 +26,19 @@ namespace Cryptography.Algorithms.Rijandel
         public byte[] CreateSBox()
         {
             var result = new byte[256];
-            foreach (byte i in Enumerable.Range(byte.MinValue, 256))
+            
+            for (byte i = 1; i <= 255; i++)
             {
-                foreach (byte j in Enumerable.Range(byte.MinValue, 256))
+                var MultiplicativeInversed = _galoisField.MultiplicativeInverse(i, MultiplicativeInverseCalculationWay.Exponentiation);
+                for (var k = 0; k < 5; k++)
                 {
-                    var MultiplicativeInversed = _galoisField.MultiplicativeInverse(i, MultiplicativeInverseCalculationWay.Exponentiation);
-                    for (var k = 0; k < 5; k++)
-                    {
-                        result[i] ^= MultiplicativeInversed;
-                        MultiplicativeInversed = (byte)((MultiplicativeInversed << 1) | (MultiplicativeInversed >> 7));
-                    }
-                    result[i] ^= 99;
-                    break;
-                    
+                    result[i] ^= MultiplicativeInversed;
+                    MultiplicativeInversed = (byte)((MultiplicativeInversed << 1) | (MultiplicativeInversed >> 7));
                 }
-            };
-            result[0] = 99;
+                result[i] ^= 99;
+            }
+            
+            result[0] = 0x63;
             return result;
         }
         
