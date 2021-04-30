@@ -4,5 +4,5 @@
 - [Лабораторная работа №2](https://github.com/dep-810b-studs/cryptography/tree/master/Cryptography.Arithmetic/ResidueNumberSystem) Работа с системой вычетов
 - [Лабораторная работа №3](https://github.com/dep-810b-studs/cryptography/tree/master/Cryptography.Arithmetic/GaloisField) Поля Галуа
 - [Реализация алгоритма RSA](https://github.com/dep-810b-studs/cryptography/blob/master/Cryptography.Algorithms/RSA/RSACipher.cs)
-- [Реализация алгоритма Rijandel](https://github.com/dep-810b-studs/cryptography/blob/master/Cryptography.Algorithms/RSA/RSACipher.cs)
+- [Реализация алгоритма Rijandel](https://github.com/dep-810b-studs/cryptography/blob/master/Cryptography.Algorithms/Rijandel/RijandelCipher.cs)
 - [Автотесты](https://github.com/dep-810b-studs/cryptography/tree/master/Cryptography.Autotests)
