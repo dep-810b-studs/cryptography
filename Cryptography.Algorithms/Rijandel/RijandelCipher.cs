@@ -63,41 +63,28 @@ namespace Cryptography.Algorithms.Rijandel
                 _roundsCount = value;
             }
         }
-
-        public byte[] Encrypt(byte[] openText)
+        
+        public byte[] EncryptionConvertion(byte[] data, CipherAction cipherAction)
         {
             //todo: добавить проверку на количество бит 128/196/256
             
-            var state = openText.Clone() as byte[];
+            var state = data.Clone() as byte[];
             
-            InitialRound(state, CipherAction.Encrypt);
+            InitialRound(state, cipherAction);
+
+            Action<byte[],int> round = cipherAction switch
+            {
+                CipherAction.Encrypt => EncryptionRound,
+                CipherAction.Decrypt => DecryptionRound
+            };
             
             for (var roundNumber = 0; roundNumber < RoundsCount - 1; roundNumber++)
             {
-                EncryptionRound(state, roundNumber);
-            }
-
-            FinalRound(state, CipherAction.Encrypt);
-            
-            return state;
-        }
-
-        public byte[] Decrypt(byte[] cipherText)
-        {
-            //todo: добавить проверку на количество бит 128/196/256
-
-            
-            var state = cipherText.Clone() as byte[];
-            
-            InitialRound(state, CipherAction.Decrypt);
-            
-            for (var roundNumber = 0; roundNumber < RoundsCount - 1; roundNumber++)
-            {
-                DecryptionRound(state, roundNumber);
+                round(state, roundNumber);
             }
             
-            FinalRound(state, CipherAction.Decrypt);
-            
+            FinalRound(state, cipherAction);
+
             return state;
         }
 
@@ -273,13 +260,13 @@ namespace Cryptography.Algorithms.Rijandel
         public byte[] Encrypt(byte[] openText, byte[] key)
         {
             Key = key;
-            return Encrypt(openText, key);
+            return EncryptionConvertion(openText, CipherAction.Encrypt);
         }
 
-        public byte[] Decrypt(byte[] encryptedText, byte[] key)
+        public byte[] Decrypt(byte[] cipherText, byte[] key)
         {
             Key = key;
-            return Decrypt(encryptedText, key);
+            return EncryptionConvertion(cipherText, CipherAction.Encrypt); 
         }
     }
 
