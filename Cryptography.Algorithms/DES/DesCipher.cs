@@ -204,6 +204,8 @@ namespace Cryptography.Algorithms.DES
             return keys.ToArray();
         }
 
+        public CipherBlockSize CipherBlockSize { get; set; } = CipherBlockSize.Des;
+
         public byte[] Encrypt(byte[] openText, byte[] key)
         {
             var textInBitArrayFormat = new BitArray(openText);
