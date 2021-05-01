@@ -6,32 +6,30 @@ namespace Cryptography.Algorithms.Symmetric.Padding
 {
     public interface IPaddingService
     {
-        (byte[] FilledData, byte [] PaddingInfo) FillEmptyBytes(byte[] data, int blockSize);
-        PaddingInfo TryGetPaddingInfo(byte[] paddingInfoSource)
+        (byte[] FilledData, byte [] PaddingInfo) FillEmptyBytes(byte[] data, int blockSizeInBytes);
+        PaddingInfo TryGetPaddingInfo(byte[] paddingInfoSource);
     }
     
     public class PaddingService : IPaddingService
     {
-        public (byte[] FilledData, byte [] PaddingInfo) FillEmptyBytes(byte[] data, int blockSize)
+        public (byte[] FilledData, byte [] PaddingInfo) FillEmptyBytes(byte[] data, int blockSizeInBytes)
         {
-            var filledData = new byte[blockSize];
+            var filledData = new byte[blockSizeInBytes];
 
             for (int i = 0; i < data.Length; i++)
             {
                 filledData[i] = data[i];
             }
 
-            var countEmptyBytes = blockSize - data.Length;
-            var paddingInfo = new PaddingInfo(countEmptyBytes);
-
-            var paddingInfoInBytes = JsonSerializer.SerializeToUtf8Bytes(paddingInfo);
+            var countEmptyBytes = blockSizeInBytes - data.Length;
+            var paddingInfoInBytes = new byte[blockSizeInBytes];
+            paddingInfoInBytes[0] = (byte)countEmptyBytes;
             return (filledData, paddingInfoInBytes);
         }
 
         public PaddingInfo TryGetPaddingInfo(byte[] paddingInfoSource)
         {
-            var stringPaddingInfo = Encoding.UTF8.GetString(paddingInfoSource);
-            var paddingInfo = JsonSerializer.Deserialize<PaddingInfo>(stringPaddingInfo);
+            var paddingInfo = new PaddingInfo(paddingInfoSource[0]);
             return paddingInfo;
         }
     }
