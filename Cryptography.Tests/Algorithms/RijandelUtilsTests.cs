@@ -1,4 +1,6 @@
-﻿using Cryptography.Algorithms.Rijandel;
+﻿using System.Collections;
+using System.Collections.Generic;
+using Cryptography.Algorithms.Rijandel;
 using Xunit;
 
 namespace Cryptography.Tests
@@ -65,6 +67,27 @@ namespace Cryptography.Tests
             var actualSBox = RijandelUtils.CreateInversedSBox();
             //assert
             Assert.Equal(expectedSBox, actualSBox);
+        }
+
+        [Theory]
+        [ClassData(typeof(CyclicShiftTestCases))]
+        public void CyclicShiftShouldworkcorrect(byte [] state, int shift, byte[] expectedResult)
+        {
+            //act
+            RijandelUtils.CyclicShift(state, shift);
+            //assert
+            Assert.Equal(expectedResult, state);
+        }
+        
+        private class CyclicShiftTestCases : IEnumerable<object[]>
+        {
+            public IEnumerator<object[]> GetEnumerator()
+            {
+                yield return new object[]{new byte[]{1,2,3,4,5,6},3,new byte[]{4,5,6,1,2,3}};
+                yield return new object[]{new byte[]{1,2,3,4,5,6},1,new byte[]{2,3,4,5,6,1}};
+            }
+
+            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         }
     }
 }

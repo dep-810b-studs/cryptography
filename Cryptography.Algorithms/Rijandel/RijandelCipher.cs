@@ -10,8 +10,8 @@ namespace Cryptography.Algorithms.Rijandel
     {
         private static readonly byte[] _sBox;
         private static readonly byte[] _inversedSBox;
-        private static readonly byte[] _cPolynomial = new byte[] { 2, 3, 1, 1, 1, 2, 3, 1, 1, 1, 2, 3, 3, 1, 1, 2 };
-        private static byte[] _inversedCPolynomial = new byte[] { 14, 11, 13, 9, 9, 14, 11, 13, 13, 9, 14, 11, 11, 13, 9, 14 };
+        private static readonly byte[] _cPolynomial = new byte[] { 3, 1 ,1, 2 };
+        private static byte[] _inversedCPolynomial = new byte[] { 11, 13, 9, 14};
         private static byte[] _rCon = new byte[] { 1, 2, 4, 8, 16, 32, 64, 128, 27, 54 };
         private static readonly GaloisField _galoisField = new (); 
 
@@ -25,26 +25,23 @@ namespace Cryptography.Algorithms.Rijandel
             _inversedSBox = RijandelUtils.CreateInversedSBox(_sBox);
         }
 
-        public RijandelCipher()
-        {
-            Key = new byte[16];
-        }
-        
         public byte[] Key
         {
             private get => _key;
 
             set
             {
-                if (value == null)
+                if (value is null)
                 {
                     throw new ArgumentNullException("Key");
                 }
-                if (!(new[] { 16, 24, 32 }).Contains(value.Length))
+
+                if (!RijandelUtils.SuppotedBlockSizeCountByte.Contains((byte)value.Length))
                 {
-                    throw new ArgumentException("Key");
+                    throw new ArgumentOutOfRangeException(nameof(value));
                 }
-                _key = (byte[])value.Clone();
+                
+                _key = value.Clone() as byte[];
                 CreateRoundKeys();
             }
         }
@@ -55,18 +52,23 @@ namespace Cryptography.Algorithms.Rijandel
 
             set
             {
-                var supportedRoundsCount = RijandelUtils.RijandelModes.Select((mode) => mode.Value.CountRounds);
-
-                if (!supportedRoundsCount.Contains(value))
+                if (!RijandelUtils.SuppotedCountRounds.Contains(value))
                     throw new ArgumentOutOfRangeException(nameof(RoundsCount));
 
                 _roundsCount = value;
             }
         }
+
+        private RijandelMode Mode => RijandelUtils.RijandelModes[CipherBlockSize];
+
+        private const int RowsCount = 4;
         
-        public byte[] EncryptionConvertion(byte[] data, CipherAction cipherAction)
+        public CipherBlockSize CipherBlockSize { get; set; } 
+            
+        private byte[] EncryptionConvertion(byte[] data, CipherAction cipherAction)
         {
-            //todo: добавить проверку на количество бит 128/196/256
+            if (!RijandelUtils.SuppotedBlockSizeCountByte.Contains(data.Length))
+                throw new ArgumentOutOfRangeException(nameof(data));
             
             var state = data.Clone() as byte[];
             
@@ -90,7 +92,7 @@ namespace Cryptography.Algorithms.Rijandel
 
         private void CreateRoundKeys()
         {
-            RoundsCount = RijandelUtils.RijandelModes[(CipherBlockSize) Key.Length].CountRounds; 
+            RoundsCount = RijandelUtils.RijandelModes[CipherBlockSize].CountRounds; 
             _roundKeys = new byte[RoundsCount][];
             
             for (var i = 0; i < RoundsCount; i++)
@@ -139,27 +141,30 @@ namespace Cryptography.Algorithms.Rijandel
         {
             state = state.Select((number, index) => (byte)(number ^ roundkey[index])).ToArray();
         }
+        
 
-        private void ShiftRows(byte[] state)
+        public void ShiftRowsUsingMacros(byte[] state, CipherAction cipherAction)
         {
-            var temporary = state[1];
-            state[1] = state[5];
-            state[5] = state[9];
-            state[9] = state[13];
-            state[13] = temporary;
-            temporary = state[2];
-            state[2] = state[10];
-            state[10] = temporary;
-            temporary = state[6];
-            state[6] = state[14];
-            state[14] = temporary;
-            temporary = state[3];
-            state[3] = state[15];
-            state[15] = state[11];
-            state[11] = state[7];
-            state[7] = temporary;
-        }
+            var (c1, c2, c3) = Mode.Shifts;
+            var countBytesInRow = Mode.Nb;
 
+            if (cipherAction is CipherAction.Decrypt)
+            {
+                (c1, c2, c3) = (countBytesInRow - c1, countBytesInRow - c2, countBytesInRow - c3);
+            }
+
+            var row1 = RijandelUtils.GetRow(state, 1, countBytesInRow);
+            RijandelUtils.CyclicShift(row1, c1);
+            RijandelUtils.SetRow(state,row1,1,countBytesInRow);
+            
+            var row2 = RijandelUtils.GetRow(state, 2, countBytesInRow);
+            RijandelUtils.CyclicShift(row2, c2);
+            RijandelUtils.SetRow(state,row2,2,countBytesInRow);
+            
+            var row3 = RijandelUtils.GetRow(state, 3, countBytesInRow);
+            RijandelUtils.CyclicShift(row3, c3);
+            RijandelUtils.SetRow(state,row3,3,countBytesInRow );
+        }
         private void MixColumns(byte[] state, CipherAction cipherAction)
         {
             var cPolynomial = cipherAction switch
@@ -168,43 +173,21 @@ namespace Cryptography.Algorithms.Rijandel
                 CipherAction.Decrypt => _inversedCPolynomial
             };
             
-            var temporaryState = new byte[state.Length];
-            
-            for (var i = 0; i < 4; i++)
+            var blockSize = Mode.BlockSizeCountBytes;
+            byte[] numArray = new byte[blockSize];
+            for (int column = 0; column < Mode.Nb; ++column)
             {
-                for (var j = 0; j < 4; j++)
+                for (int row = 0; row < 4; ++row)
                 {
-                    temporaryState[i * 4 + j] =  _galoisField.Multiply(cPolynomial[j * 4], state[i * 4]);
-                    temporaryState[i * 4 + j] ^= _galoisField.Multiply(cPolynomial[j * 4 + 1], state[i * 4 + 1]);
-                    temporaryState[i * 4 + j] ^= _galoisField.Multiply(cPolynomial[j * 4 + 2], state[i * 4 + 2]);
-                    temporaryState[i * 4 + j] ^= _galoisField.Multiply(cPolynomial[j * 4 + 3], state[i * 4 + 3]);
+                    for (int index3 = 0; index3 < 4; ++index3)
+                    {
+                        numArray[column * 4 + index3] = _galoisField.Add(numArray[column * 4 + index3], 
+                            _galoisField.Multiply(cPolynomial[row], state[column * 4 + (3 + index3 - row) % 4]));
+                    }
                 }
             }
-            
-            for (var i = 0; i < state.Length; i++)
-            {
-                state[i] = temporaryState[i];
-            }
-        }
-        
-        private void InversedShiftRows(byte[] state)
-        {
-            var temporary = state[1];
-            state[1] = state[13];
-            state[13] = state[9];
-            state[9] = state[5];
-            state[5] = temporary;
-            temporary = state[2];
-            state[2] = state[10];
-            state[10] = temporary;
-            temporary = state[6];
-            state[6] = state[14];
-            state[14] = temporary;
-            temporary = state[3];
-            state[3] = state[7];
-            state[7] = state[11];
-            state[11] = state[15];
-            state[15] = temporary;
+            for (int index = 0; index < blockSize; ++index)
+                state[index] = numArray[index];
         }
 
         #region Rounds
@@ -223,14 +206,14 @@ namespace Cryptography.Algorithms.Rijandel
         private void EncryptionRound(byte[] state, int roundNumber)
         {
             SubBytes(state, CipherAction.Encrypt);
-            ShiftRows(state);
+            ShiftRowsUsingMacros(state, CipherAction.Encrypt);
             MixColumns(state, CipherAction.Encrypt);
             AddRoundKey(state, _roundKeys[roundNumber]);
         }
         
         private void DecryptionRound(byte[] state, int roundNumber)
         {
-            InversedShiftRows(state);
+            ShiftRowsUsingMacros(state, CipherAction.Decrypt);
             SubBytes(state, CipherAction.Decrypt);
             AddRoundKey(state, _roundKeys[RoundsCount - roundNumber - 2]);
             MixColumns(state, CipherAction.Decrypt);
@@ -242,11 +225,13 @@ namespace Cryptography.Algorithms.Rijandel
             {
                 case CipherAction.Encrypt:
                     SubBytes(state, CipherAction.Encrypt);
-                    ShiftRows(state);
+                    //ShiftRows(state);
+                    ShiftRowsUsingMacros(state, CipherAction.Encrypt);
                     AddRoundKey(state, _roundKeys.Last());
                     break;
                 case CipherAction.Decrypt:
-                    InversedShiftRows(state);
+                    //InversedShiftRows(state);
+                    ShiftRowsUsingMacros(state, CipherAction.Decrypt);
                     SubBytes(state, CipherAction.Decrypt);
                     AddRoundKey(state, Key);
                     break;
@@ -266,7 +251,7 @@ namespace Cryptography.Algorithms.Rijandel
         public byte[] Decrypt(byte[] cipherText, byte[] key)
         {
             Key = key;
-            return EncryptionConvertion(cipherText, CipherAction.Encrypt); 
+            return EncryptionConvertion(cipherText, CipherAction.Decrypt); 
         }
     }
 
