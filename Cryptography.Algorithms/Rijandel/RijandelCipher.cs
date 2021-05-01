@@ -5,19 +5,20 @@ using Cryptography.Arithmetic.GaloisField;
 
 namespace Cryptography.Algorithms.Rijandel
 {
-
-    public sealed class RijandelCipher : ISymmetricCipher
+    internal sealed class RijandelCipher : ISymmetricCipher
     {
+        #region Algorithm Data
+
         private static readonly byte[] _sBox;
         private static readonly byte[] _inversedSBox;
         private static readonly byte[] _cPolynomial = new byte[] { 3, 1 ,1, 2 };
         private static byte[] _inversedCPolynomial = new byte[] { 11, 13, 9, 14};
         private static byte[] _rCon = new byte[] { 1, 2, 4, 8, 16, 32, 64, 128, 27, 54 };
-        private static readonly GaloisField _galoisField = new (); 
-
-        private byte[] _key;
+        private static readonly GaloisField _galoisField = new ();
         private byte[][] _roundKeys;
         private byte _roundsCount;
+        private RijandelMode Mode => RijandelUtils.RijandelModes[CipherBlockSize];
+
 
         static RijandelCipher()
         {
@@ -25,46 +26,28 @@ namespace Cryptography.Algorithms.Rijandel
             _inversedSBox = RijandelUtils.CreateInversedSBox(_sBox);
         }
 
-        public byte[] Key
-        {
-            private get => _key;
+        #endregion
 
-            set
-            {
-                if (value is null)
-                {
-                    throw new ArgumentNullException("Key");
-                }
+        #region API of encryption
 
-                if (!RijandelUtils.SuppotedBlockSizeCountByte.Contains((byte)value.Length))
-                {
-                    throw new ArgumentOutOfRangeException(nameof(value));
-                }
-                
-                _key = value.Clone() as byte[];
-                CreateRoundKeys();
-            }
-        }
-
-        private byte RoundsCount
-        {
-            get => _roundsCount;
-
-            set
-            {
-                if (!RijandelUtils.SuppotedCountRounds.Contains(value))
-                    throw new ArgumentOutOfRangeException(nameof(RoundsCount));
-
-                _roundsCount = value;
-            }
-        }
-
-        private RijandelMode Mode => RijandelUtils.RijandelModes[CipherBlockSize];
-
-        private const int RowsCount = 4;
+        public CipherBlockSize CipherBlockSize { get; set; }
         
-        public CipherBlockSize CipherBlockSize { get; set; } 
-            
+        public byte[] Encrypt(byte[] openText, byte[] key)
+        {
+            CreateRoundKeys(key);
+            return EncryptionConvertion(openText, CipherAction.Encrypt);
+        }
+
+        public byte[] Decrypt(byte[] cipherText, byte[] key)
+        {
+            CreateRoundKeys(key);
+            return EncryptionConvertion(cipherText, CipherAction.Decrypt); 
+        }
+
+        #endregion
+
+        #region Main algorithm
+
         private byte[] EncryptionConvertion(byte[] data, CipherAction cipherAction)
         {
             if (!RijandelUtils.SuppotedBlockSizeCountByte.Contains(data.Length))
@@ -73,16 +56,10 @@ namespace Cryptography.Algorithms.Rijandel
             var state = data.Clone() as byte[];
             
             InitialRound(state, cipherAction);
-
-            Action<byte[],int> round = cipherAction switch
-            {
-                CipherAction.Encrypt => EncryptionRound,
-                CipherAction.Decrypt => DecryptionRound
-            };
             
-            for (var roundNumber = 0; roundNumber < RoundsCount - 1; roundNumber++)
+            for (var roundNumber = 0; roundNumber < Mode.CountRounds - 1; roundNumber++)
             {
-                round(state, roundNumber);
+                Round(state, roundNumber, cipherAction);
             }
             
             FinalRound(state, cipherAction);
@@ -90,23 +67,77 @@ namespace Cryptography.Algorithms.Rijandel
             return state;
         }
 
-        private void CreateRoundKeys()
-        {
-            RoundsCount = RijandelUtils.RijandelModes[CipherBlockSize].CountRounds; 
-            _roundKeys = new byte[RoundsCount][];
-            
-            for (var i = 0; i < RoundsCount; i++)
-            {
-                _roundKeys[i] = new byte[Key.Length];
+        #endregion
 
-                var sourceKey = i == 0 ? Key : _roundKeys[i - 1];
+        #region Rounds
+
+        private void InitialRound(byte[] state, CipherAction cipherAction)
+        {
+            var key = cipherAction switch
+            {
+                CipherAction.Encrypt => _roundKeys.First(),
+                CipherAction.Decrypt => _roundKeys.Last()
+            };
+            
+            AddRoundKey(state, key);
+        }
+
+        private void Round(byte[] state, int roundNumber, CipherAction cipherAction)
+        {
+            switch (cipherAction)
+            {
+                case CipherAction.Encrypt:
+                    SubBytes(state, CipherAction.Encrypt);
+                    ShiftRows(state, CipherAction.Encrypt);
+                    MixColumns(state, CipherAction.Encrypt);
+                    AddRoundKey(state, _roundKeys[roundNumber]);
+                    break;
+                case CipherAction.Decrypt:
+                    ShiftRows(state, CipherAction.Decrypt);
+                    SubBytes(state, CipherAction.Decrypt);
+                    AddRoundKey(state, _roundKeys[Mode.CountRounds - roundNumber - 2]);
+                    MixColumns(state, CipherAction.Decrypt);
+                    break;
+            }
+        }
+
+        private void FinalRound(byte[] state, CipherAction cipherAction)
+        {
+            switch (cipherAction)
+            {
+                case CipherAction.Encrypt:
+                    SubBytes(state, CipherAction.Encrypt);
+                    ShiftRows(state, CipherAction.Encrypt);
+                    AddRoundKey(state, _roundKeys.Last());
+                    break;
+                case CipherAction.Decrypt:
+                    ShiftRows(state, CipherAction.Decrypt);
+                    SubBytes(state, CipherAction.Decrypt);
+                    AddRoundKey(state, _roundKeys.First());
+                    break;
+            }
+        }
+        
+        #endregion
+
+        #region Round operations
+
+        private void CreateRoundKeys(byte[] key)
+        {
+            _roundKeys = new byte[RijandelUtils.RijandelModes[CipherBlockSize].CountRounds][];
+            
+            for (var i = 0; i < RijandelUtils.RijandelModes[CipherBlockSize].CountRounds; i++)
+            {
+                _roundKeys[i] = new byte[key.Length];
+
+                var sourceKey = i == 0 ? key : _roundKeys[i - 1];
                 
                 byte[] W = new byte[4]
                 {
-                    sourceKey[Key.Length - 3],
-                    sourceKey[Key.Length - 2],
-                    sourceKey[Key.Length - 1],
-                    sourceKey[Key.Length - 4]
+                    sourceKey[key.Length - 3],
+                    sourceKey[key.Length - 2],
+                    sourceKey[key.Length - 1],
+                    sourceKey[key.Length - 4]
                 };
                     
                 for (var j = 0; j < 4; j++)
@@ -123,7 +154,6 @@ namespace Cryptography.Algorithms.Rijandel
                 }
             }
         }
-
         private void SubBytes(byte[] state, CipherAction cipherAction)
         {
             var substitutionTable = cipherAction switch
@@ -136,34 +166,28 @@ namespace Cryptography.Algorithms.Rijandel
             
             state = stateCopy.Select((_, index) => substitutionTable[stateCopy[index]]).ToArray();
         }
-        
         private void AddRoundKey(byte[] state, byte[] roundkey)
         {
             state = state.Select((number, index) => (byte)(number ^ roundkey[index])).ToArray();
         }
         
-
-        public void ShiftRowsUsingMacros(byte[] state, CipherAction cipherAction)
+        public void ShiftRows(byte[] state, CipherAction cipherAction)
         {
-            var (c1, c2, c3) = Mode.Shifts;
+            var shifts = new int[] {Mode.Shifts.C1, Mode.Shifts.C2, Mode.Shifts.C3};
+            
             var countBytesInRow = Mode.Nb;
 
-            if (cipherAction is CipherAction.Decrypt)
+            for (int i = 0; i < shifts.Length; i++)
             {
-                (c1, c2, c3) = (countBytesInRow - c1, countBytesInRow - c2, countBytesInRow - c3);
-            }
+                if (cipherAction is CipherAction.Decrypt)
+                    shifts[i] = countBytesInRow - shifts[i];
 
-            var row1 = RijandelUtils.GetRow(state, 1, countBytesInRow);
-            RijandelUtils.CyclicShift(row1, c1);
-            RijandelUtils.SetRow(state,row1,1,countBytesInRow);
-            
-            var row2 = RijandelUtils.GetRow(state, 2, countBytesInRow);
-            RijandelUtils.CyclicShift(row2, c2);
-            RijandelUtils.SetRow(state,row2,2,countBytesInRow);
-            
-            var row3 = RijandelUtils.GetRow(state, 3, countBytesInRow);
-            RijandelUtils.CyclicShift(row3, c3);
-            RijandelUtils.SetRow(state,row3,3,countBytesInRow );
+                var rowNumber = i + 1;
+                
+                var row = RijandelUtils.GetRow(state, rowNumber, countBytesInRow);
+                RijandelUtils.CyclicShift(row, shifts[i]);
+                RijandelUtils.SetRow(state, row, rowNumber, countBytesInRow);
+            }
         }
         private void MixColumns(byte[] state, CipherAction cipherAction)
         {
@@ -190,69 +214,7 @@ namespace Cryptography.Algorithms.Rijandel
                 state[index] = numArray[index];
         }
 
-        #region Rounds
-
-        private void InitialRound(byte[] state, CipherAction cipherAction)
-        {
-            var key = cipherAction switch
-            {
-                CipherAction.Encrypt => Key,
-                CipherAction.Decrypt => _roundKeys.Last()
-            };
-            
-            AddRoundKey(state, key);
-        }
-        
-        private void EncryptionRound(byte[] state, int roundNumber)
-        {
-            SubBytes(state, CipherAction.Encrypt);
-            ShiftRowsUsingMacros(state, CipherAction.Encrypt);
-            MixColumns(state, CipherAction.Encrypt);
-            AddRoundKey(state, _roundKeys[roundNumber]);
-        }
-        
-        private void DecryptionRound(byte[] state, int roundNumber)
-        {
-            ShiftRowsUsingMacros(state, CipherAction.Decrypt);
-            SubBytes(state, CipherAction.Decrypt);
-            AddRoundKey(state, _roundKeys[RoundsCount - roundNumber - 2]);
-            MixColumns(state, CipherAction.Decrypt);
-        }
-        
-        private void FinalRound(byte[] state, CipherAction cipherAction)
-        {
-            switch (cipherAction)
-            {
-                case CipherAction.Encrypt:
-                    SubBytes(state, CipherAction.Encrypt);
-                    //ShiftRows(state);
-                    ShiftRowsUsingMacros(state, CipherAction.Encrypt);
-                    AddRoundKey(state, _roundKeys.Last());
-                    break;
-                case CipherAction.Decrypt:
-                    //InversedShiftRows(state);
-                    ShiftRowsUsingMacros(state, CipherAction.Decrypt);
-                    SubBytes(state, CipherAction.Decrypt);
-                    AddRoundKey(state, Key);
-                    break;
-                    
-            }
-
-        }
-
         #endregion
-        
-        public byte[] Encrypt(byte[] openText, byte[] key)
-        {
-            Key = key;
-            return EncryptionConvertion(openText, CipherAction.Encrypt);
-        }
-
-        public byte[] Decrypt(byte[] cipherText, byte[] key)
-        {
-            Key = key;
-            return EncryptionConvertion(cipherText, CipherAction.Decrypt); 
-        }
     }
 
 }
