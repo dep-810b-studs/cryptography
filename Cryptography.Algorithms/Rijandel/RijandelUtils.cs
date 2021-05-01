@@ -94,15 +94,5 @@ namespace Cryptography.Algorithms.Rijandel
                 state[i + (rowNumber * countBytesInRow)] = row[i];
             }
         }
-
-        public static byte[] GenerateRandomKey(CipherBlockSize cipherBlockSize)
-        {
-            var random = new Random();
-            var keyLength = RijandelModes[cipherBlockSize].BlockSizeCountBytes;
-            var randomKey = new byte[keyLength];
-            random.NextBytes(randomKey);
-            return randomKey;
-        }
-        
     }
 }
