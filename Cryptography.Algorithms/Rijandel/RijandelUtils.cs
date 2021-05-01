@@ -19,7 +19,6 @@ namespace Cryptography.Algorithms.Rijandel
         };
 
         public static IEnumerable<int> SuppotedBlockSizeCountByte => RijandelModes.Select((mode) => mode.Value.BlockSizeCountBytes);
-        public static IEnumerable<byte> SuppotedCountRounds => RijandelModes.Select((mode) => mode.Value.CountRounds);
         
         public static byte[] CreateSBox()
         {
@@ -57,13 +56,22 @@ namespace Cryptography.Algorithms.Rijandel
 
         public static void CyclicShift(byte[] state, int shift)
         {
-            var stateCopy = state.Clone() as byte[];
-            
-            for (int i = 0; i < state.Length; i++)
+            if (state.Length == RijandelModes[CipherBlockSize.Big].BlockSizeCountBytes)
             {
-                var shiftedIndex = i + shift;
-                var aimIndex = shiftedIndex <  state.Length ? shiftedIndex : Math.Abs(state.Length - shiftedIndex);  
-                state[i] = stateCopy[aimIndex];
+                var ulongValue = state.ToUInt64();
+                var valueForBitOperations = ulongValue << shift * 8 | ulongValue >>(state.Length - (shift) * 8);
+                state = valueForBitOperations.ToByteArray();
+            }
+            else
+            {
+                var stateCopy = state.Clone() as byte[];
+
+                for (int i = 0; i < state.Length; i++)
+                {
+                    var shiftedIndex = i + shift;
+                    var aimIndex = shiftedIndex <  state.Length ? shiftedIndex : Math.Abs(state.Length - shiftedIndex);  
+                    state[i] = stateCopy[aimIndex];
+                }   
             }
         }
 
