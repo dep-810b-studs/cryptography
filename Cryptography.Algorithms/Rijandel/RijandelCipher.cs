@@ -5,7 +5,7 @@ using Cryptography.Arithmetic.GaloisField;
 
 namespace Cryptography.Algorithms.Rijandel
 {
-    internal sealed class RijandelCipher : ISymmetricCipher
+    public sealed class RijandelCipher : ISymmetricCipher
     {
         #region Algorithm Data
 
