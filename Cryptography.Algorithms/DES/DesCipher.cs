@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using Cryptography.Algorithms.Symmetric;
 
 namespace Cryptography.Algorithms.DES
 {
     public class DesCipher : ISymmetricCipher
     {
-        static int[] pc1 = {
+        #region Tables
+
+                static int[] pc1 = {
             57, 49, 41, 33, 25, 17, 9,
             1, 58, 50, 42, 34, 26, 18,
             10, 2, 59, 51, 43, 35, 27,
@@ -117,22 +121,23 @@ namespace Cryptography.Algorithms.DES
                             35, 3, 43, 11, 51, 19, 59, 27,
                             34, 2, 42, 10, 50, 18, 58, 26,
                             33, 1, 41, 9, 49, 17, 57, 25};
-        
 
-        private static BitArray DeCrypt(BitArray msgInBitArr, BitArray[] keys)
+        #endregion
+
+        private static BitArray EncryptionConvertion(BitArray message, BitArray[] keys, CipherAction cipherAction)
         {
-            msgInBitArr.applyPermutations(ip);
+            message.applyPermutations(ip);
 
-            var temp = new List<BitArray>(keys);
+            if (cipherAction is CipherAction.Decrypt)
+            {
+                var temp = new List<BitArray>(keys);
+                temp.Reverse();
+                keys = temp.ToArray();   
+            }
 
-            temp.Reverse();
-
-            keys = temp.ToArray();
-
-            var twoParts = msgInBitArr.DevideByParts(2);
+            var twoParts = message.DevideByParts(2);
             var L = twoParts[0];
             var R = twoParts[1];
-
 
             for (int i = 0; i < 16;i++)
             {
@@ -147,29 +152,7 @@ namespace Cryptography.Algorithms.DES
 
             return res;
         }
-
-        private static BitArray EnCrypt(BitArray msgInBitArr, BitArray[] keys)
-        {
-            msgInBitArr.applyPermutations(ip);
-
-            var twoParts = msgInBitArr.DevideByParts(2);
-            var L = twoParts[0];
-            var R = twoParts[1];
-
-            for (int i=0; i<16;++i)
-            {
-                var tempL = L.Clone() as BitArray;
-                L = R.Clone() as BitArray;
-                R = tempL ^ F(R, keys[i]);
-            }
-
-            var res = R.JoinArr(L);
-
-            res.applyPermutations(ip1);
-
-            return res;
-        }
-
+        
         private static BitArray F(BitArray right, BitArray key)
         {
             var extendedRight = new BitArray(48);
@@ -225,7 +208,7 @@ namespace Cryptography.Algorithms.DES
         {
             var textInBitArrayFormat = new BitArray(openText);
             var keyInBitArrayFormat = Key(new BitArray(key));
-            var cipherText =  EnCrypt(textInBitArrayFormat, keyInBitArrayFormat);
+            var cipherText =  EncryptionConvertion(textInBitArrayFormat, keyInBitArrayFormat, CipherAction.Encrypt);
             return cipherText.getByteArrayFromBitArray;
         }
 
@@ -233,7 +216,7 @@ namespace Cryptography.Algorithms.DES
         {
             var textInBitArrayFormat = new BitArray(cipherText);
             var keyInBitArrayFormat = Key(new BitArray(key));
-            var openText =  DeCrypt(textInBitArrayFormat, keyInBitArrayFormat);
+            var openText =  EncryptionConvertion(textInBitArrayFormat, keyInBitArrayFormat, CipherAction.Decrypt);
             return openText.getByteArrayFromBitArray;
         }
     }
