@@ -39,6 +39,8 @@ namespace Cryptography.Arithmetic.GaloisField
             return multiplicationByModule;
         }
 
+        public byte Add(byte firstNumber, byte secondNumber) => (byte)(firstNumber ^ secondNumber);
+
         
         public byte Pow(byte number, byte exponent)
         {
