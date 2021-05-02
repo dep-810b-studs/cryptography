@@ -124,6 +124,8 @@ namespace Cryptography.Algorithms.DES
 
         #endregion
 
+
+        private byte[] _key;
         private static BitArray EncryptionConvertion(BitArray message, BitArray[] keys, CipherAction cipherAction)
         {
             message.applyPermutations(ip);
@@ -206,20 +208,25 @@ namespace Cryptography.Algorithms.DES
 
         public CipherBlockSize CipherBlockSize { get; set; } = CipherBlockSize.Des;
 
-        public byte[] Encrypt(byte[] openText, byte[] key)
+        public byte[] Encrypt(byte[] openText)
         {
             var textInBitArrayFormat = new BitArray(openText);
-            var keyInBitArrayFormat = Key(new BitArray(key));
+            var keyInBitArrayFormat = Key(new BitArray(_key));
             var cipherText =  EncryptionConvertion(textInBitArrayFormat, keyInBitArrayFormat, CipherAction.Encrypt);
             return cipherText.getByteArrayFromBitArray;
         }
 
-        public byte[] Decrypt(byte[] cipherText, byte[] key)
+        public byte[] Decrypt(byte[] cipherText)
         {
             var textInBitArrayFormat = new BitArray(cipherText);
-            var keyInBitArrayFormat = Key(new BitArray(key));
+            var keyInBitArrayFormat = Key(new BitArray(_key));
             var openText =  EncryptionConvertion(textInBitArrayFormat, keyInBitArrayFormat, CipherAction.Decrypt);
             return openText.getByteArrayFromBitArray;
+        }
+
+        public void CreateRoundKeys(byte[] key)
+        {
+            _key = key;
         }
     }
 }
