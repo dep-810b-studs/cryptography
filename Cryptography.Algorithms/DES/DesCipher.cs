@@ -124,64 +124,16 @@ namespace Cryptography.Algorithms.DES
 
         #endregion
 
-
-        private byte[] _key;
-        private static BitArray EncryptionConvertion(BitArray message, BitArray[] keys, CipherAction cipherAction)
+        #region Cipher API
+        public CipherBlockSize CipherBlockSize { get; set; } = CipherBlockSize.Des;
+        public byte[] Encrypt(byte[] openText) => EncryptionConvertion(openText, CipherAction.Encrypt);
+        public byte[] Decrypt(byte[] cipherText) => EncryptionConvertion(cipherText, CipherAction.Decrypt);
+        public void CreateRoundKeys(byte[] key)
         {
-            message.applyPermutations(ip);
-
-            if (cipherAction is CipherAction.Decrypt)
-            {
-                var temp = new List<BitArray>(keys);
-                temp.Reverse();
-                keys = temp.ToArray();   
-            }
-
-            var twoParts = message.DevideByParts(2);
-            var L = twoParts[0];
-            var R = twoParts[1];
-
-            for (int i = 0; i < 16;i++)
-            {
-                var tempL = L.Clone() as BitArray;
-                L = R.Clone() as BitArray;
-                R = tempL ^ F(R, keys[i]);
-            }
-
-            var res = R.JoinArr(L);
-
-            res.applyPermutations(ip1);
-
-            return res;
-        }
-        
-        private static BitArray F(BitArray right, BitArray key)
-        {
-            var extendedRight = new BitArray(48);
-
-            for (int i = 0; i < 48; ++i) extendedRight[i] = right[exp[i]-1];
-
-            var rightXorArr = extendedRight.Clone() as BitArray ^ key;
-
-            var B = rightXorArr.DevideByParts(8);
-
-
-            for(int k =0; k < 8;++k)
-            {
-                int i = ((B[k][0] ? 1 : 0) << 1) | (B[k][5] ? 1 : 0);
-                int j = ((B[k][4] ? 1 : 0)) | ((B[k][3] ? 1 : 0) << 1) | ((B[k][2] ? 1 : 0) << 2) | ((B[k][1] ? 1 : 0) << 3);
-                B[k] = new BitArray(Convert.ToString(sbox[k][i][j], 2), 4);
-            }
-
-            var S = BitArray.ConcatArr(B);
-
-            S.applyPermutations(p);
-
-            return S;
-        }
-        private static BitArray[] Key(BitArray keyInBitArr)
-        {
-            if (keyInBitArr.Count < 64) keyInBitArr.IncreaseLength(64-keyInBitArr.Count);
+            var keyInBitArr = new BitArray(key);
+            
+            if (keyInBitArr.Count < 64)
+                throw new ArgumentOutOfRangeException(nameof(keyInBitArr));
 
             keyInBitArr.applyPermutations(pc1);
             var twoParts = keyInBitArr.DevideByParts(2);
@@ -203,30 +155,67 @@ namespace Cryptography.Algorithms.DES
 
             foreach (var k in keys) k.applyPermutations(pc2);
 
-            return keys.ToArray();
+            _roundKeys = keys.ToArray();
         }
 
-        public CipherBlockSize CipherBlockSize { get; set; } = CipherBlockSize.Des;
-
-        public byte[] Encrypt(byte[] openText)
+        #endregion
+        
+        private BitArray[] _roundKeys;
+        
+        private byte[] _key;
+        private byte[] EncryptionConvertion(byte[] data, CipherAction cipherAction)
         {
-            var textInBitArrayFormat = new BitArray(openText);
-            var keyInBitArrayFormat = Key(new BitArray(_key));
-            var cipherText =  EncryptionConvertion(textInBitArrayFormat, keyInBitArrayFormat, CipherAction.Encrypt);
-            return cipherText.getByteArrayFromBitArray;
+            var message = new BitArray(data);
+            
+            message.applyPermutations(ip);
+
+            if (cipherAction is CipherAction.Decrypt)
+            {
+                var temp = new List<BitArray>(_roundKeys);
+                temp.Reverse();
+                _roundKeys = temp.ToArray();   
+            }
+
+            var twoParts = message.DevideByParts(2);
+            var L = twoParts[0];
+            var R = twoParts[1];
+
+            for (int i = 0; i < 16;i++)
+            {
+                var tempL = L.Clone() as BitArray;
+                L = R.Clone() as BitArray;
+                R = tempL ^ F(R, _roundKeys[i]);
+            }
+
+            var res = R.JoinArr(L);
+
+            res.applyPermutations(ip1);
+
+            return res.getByteArrayFromBitArray;
         }
-
-        public byte[] Decrypt(byte[] cipherText)
+        
+        private static BitArray F(BitArray right, BitArray key)
         {
-            var textInBitArrayFormat = new BitArray(cipherText);
-            var keyInBitArrayFormat = Key(new BitArray(_key));
-            var openText =  EncryptionConvertion(textInBitArrayFormat, keyInBitArrayFormat, CipherAction.Decrypt);
-            return openText.getByteArrayFromBitArray;
-        }
+            var extendedRight = new BitArray(48);
 
-        public void CreateRoundKeys(byte[] key)
-        {
-            _key = key;
+            for (int i = 0; i < 48; ++i) extendedRight[i] = right[exp[i]-1];
+
+            var rightXorArr = extendedRight.Clone() as BitArray ^ key;
+
+            var B = rightXorArr.DevideByParts(8);
+            
+            for(int k =0; k < 8;++k)
+            {
+                int i = ((B[k][0] ? 1 : 0) << 1) | (B[k][5] ? 1 : 0);
+                int j = ((B[k][4] ? 1 : 0)) | ((B[k][3] ? 1 : 0) << 1) | ((B[k][2] ? 1 : 0) << 2) | ((B[k][1] ? 1 : 0) << 3);
+                B[k] = new BitArray(Convert.ToString(sbox[k][i][j], 2), 4);
+            }
+
+            var S = BitArray.ConcatArr(B);
+
+            S.applyPermutations(p);
+
+            return S;
         }
     }
 }
