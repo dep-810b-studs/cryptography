@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using Cryptography.Algorithms;
 using Cryptography.Algorithms.Rijandel;
 using Cryptography.Algorithms.Symmetric;
 using Cryptography.Algorithms.Symmetric.CipherManager;
+using Cryptography.Algorithms.Symmetric.CipherStrategy;
 using Cryptography.Algorithms.Symmetric.CipherSystem;
 using Cryptography.Algorithms.Symmetric.Padding;
 
@@ -23,7 +25,12 @@ namespace Cryptography.DemoApplication.Jobs
                 GenerateRandomKey
             };
             var paddingService = new PaddingService();
-            var symmetricCipherManager = new SymmetricCipherManager(symmetricCipher, paddingService);
+            var strategies = new Dictionary<SymmetricCipherMode, ICipherStrategy>()
+            {
+                [SymmetricCipherMode.ElectronicCodeBook] = new ElectronicCodeBookStrategy()
+            };
+            
+            var symmetricCipherManager = new SymmetricCipherManager(symmetricCipher, paddingService, strategies);
             _symmetricSystem = new SymmetricSystem(symmetricCipherManager);
         }
 
