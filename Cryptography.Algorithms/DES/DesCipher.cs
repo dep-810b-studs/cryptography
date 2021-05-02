@@ -169,22 +169,16 @@ namespace Cryptography.Algorithms.DES
             
             message.applyPermutations(ip);
 
-            if (cipherAction is CipherAction.Decrypt)
-            {
-                var temp = new List<BitArray>(_roundKeys);
-                temp.Reverse();
-                _roundKeys = temp.ToArray();   
-            }
-
             var twoParts = message.DevideByParts(2);
             var L = twoParts[0];
             var R = twoParts[1];
 
             for (int i = 0; i < 16;i++)
             {
+                var keyIndex = cipherAction == CipherAction.Encrypt ? i : 16 - i;
                 var tempL = L.Clone() as BitArray;
                 L = R.Clone() as BitArray;
-                R = tempL ^ F(R, _roundKeys[i]);
+                R = tempL ^ F(R, _roundKeys[keyIndex]);
             }
 
             var res = R.JoinArr(L);
