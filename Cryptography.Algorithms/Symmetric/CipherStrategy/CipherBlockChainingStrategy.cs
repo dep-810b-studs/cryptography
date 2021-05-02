@@ -31,13 +31,12 @@ namespace Cryptography.Algorithms.Symmetric.CipherStrategy
             var decryptedMessage = new byte[cipherText.Count][];
 
             Parallel.For(0, cipherText.Count, 
-                blockNumber => decryptedMessage[blockNumber] = symmetricCipher.Decrypt(cipherText[blockNumber]));
-
-            for (int i = 0; i < decryptedMessage.Length; i++)
-            {
-                decryptedMessage[i] = CipherUtils.XorByteArrays(c, decryptedMessage[i]);
-                c = cipherText[i];
-            }
+                blockNumber =>
+                {
+                    var decryptedBlock = symmetricCipher.Decrypt(cipherText[blockNumber]);
+                    var c = blockNumber > 0 ? cipherText[blockNumber - 1] : InitializationVector;
+                    decryptedMessage[blockNumber] = CipherUtils.XorByteArrays(c, decryptedBlock);
+                });
 
             return decryptedMessage.ToList();
         }
