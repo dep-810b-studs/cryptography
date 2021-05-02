@@ -32,15 +32,13 @@ namespace Cryptography.Algorithms.Rijandel
 
         public CipherBlockSize CipherBlockSize { get; set; }
         
-        public byte[] Encrypt(byte[] openText, byte[] key)
+        public byte[] Encrypt(byte[] openText)
         {
-            CreateRoundKeys(key);
             return EncryptionConvertion(openText, CipherAction.Encrypt);
         }
 
-        public byte[] Decrypt(byte[] cipherText, byte[] key)
+        public byte[] Decrypt(byte[] cipherText)
         {
-            CreateRoundKeys(key);
             return EncryptionConvertion(cipherText, CipherAction.Decrypt); 
         }
 
@@ -122,11 +120,11 @@ namespace Cryptography.Algorithms.Rijandel
 
         #region Round operations
 
-        private void CreateRoundKeys(byte[] key)
+        public void CreateRoundKeys(byte[] key)
         {
-            _roundKeys = new byte[RijandelUtils.RijandelModes[CipherBlockSize].CountRounds][];
+            _roundKeys = new byte[Mode.CountRounds][];
             
-            for (var i = 0; i < RijandelUtils.RijandelModes[CipherBlockSize].CountRounds; i++)
+            for (var i = 0; i < Mode.CountRounds; i++)
             {
                 _roundKeys[i] = new byte[key.Length];
 
