@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Cryptography.Algorithms.Symmetric.CipherManager;
 using Cryptography.Algorithms.Utils;
@@ -9,6 +10,8 @@ namespace Cryptography.Algorithms.Symmetric.CipherSystem
     public interface ISymmetricSystem
     {
         void HandleEncryption(EncryptionParams encryptionParams);
+        Task<byte[]> HandleEncryption(CipherAction cipherAction, SymmetricCipherMode cipherMode, CipherBlockSize cipherBlockSize,
+            Stream data, Stream key, Stream initilizationVector);
         void GenerateAndSaveRandomKeyToFile(string fileName, CipherBlockSize keySize);
     }
     
@@ -52,7 +55,38 @@ namespace Cryptography.Algorithms.Symmetric.CipherSystem
 
             WriteAllBytesToFile(encryptionParams.OutputFileName, processedData);
         }
-        
+
+        public async Task<byte[]> HandleEncryption(CipherAction cipherAction, SymmetricCipherMode cipherMode, CipherBlockSize cipherBlockSize,
+            Stream data, Stream keyStream, Stream initilizationVectorStream)
+        {
+            var dataToProcess = await ReadAllBytesFromStream(data);
+            var key = await ReadAllBytesFromStream(keyStream);
+
+            _symmetricCipherManager.Key = key;
+            _symmetricCipherManager.CipherMode = cipherMode;
+            _symmetricCipherManager.CipherBlockSize = cipherBlockSize;
+
+            if (cipherMode is not SymmetricCipherMode.ElectronicCodeBook)
+            {
+                var initializationVector = await ReadAllBytesFromStream(initilizationVectorStream);
+                _symmetricCipherManager.InitializationVector =  initializationVector;
+            }
+            
+            var processedData = new byte[]{};
+            
+            switch (cipherAction)
+            {
+                case CipherAction.Encrypt:
+                    processedData = _symmetricCipherManager.Encrypt(dataToProcess);
+                    break;
+                case CipherAction.Decrypt:
+                    processedData = _symmetricCipherManager.Decrypt(dataToProcess);
+                    break;
+            }
+
+            return processedData;
+        }
+
         public void GenerateAndSaveRandomKeyToFile(string fileName, CipherBlockSize cipherBlockSize)
         {
             var randomKey = GenerateRandomKey((int) cipherBlockSize / 8);
@@ -76,6 +110,14 @@ namespace Cryptography.Algorithms.Symmetric.CipherSystem
             using FileStream SourceStream = File.OpenRead(fileName);
             var fileData = new byte[SourceStream.Length];
             SourceStream.Read(fileData, 0, (int)SourceStream.Length);
+            return fileData;
+        }
+        
+        private async Task<byte[]> ReadAllBytesFromStream(Stream stream)
+        {
+            var fileData = new byte[stream.Length];
+            await stream.ReadAsync(fileData, 0, (int)stream.Length);
+            stream.Dispose();
             return fileData;
         }
 

@@ -1,4 +1,5 @@
 using Cryptography.WebInterface.Rsa;
+using Cryptography.WebInterface.SymmetricCipher;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -23,6 +24,7 @@ namespace Cryptography.WebInterface
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.ConfigureRsa(Configuration);
+            services.ConfigureRijndel();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
