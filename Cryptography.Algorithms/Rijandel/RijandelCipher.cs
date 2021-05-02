@@ -32,16 +32,9 @@ namespace Cryptography.Algorithms.Rijandel
         #region API of encryption
 
         public CipherBlockSize CipherBlockSize { get; set; }
-        
-        public byte[] Encrypt(byte[] openText)
-        {
-            return EncryptionConvertion(openText, CipherAction.Encrypt);
-        }
 
-        public byte[] Decrypt(byte[] cipherText)
-        {
-            return EncryptionConvertion(cipherText, CipherAction.Decrypt); 
-        }
+        public byte[] Encrypt(byte[] openText) => EncryptionConvertion(openText, CipherAction.Encrypt);
+        public byte[] Decrypt(byte[] cipherText) => EncryptionConvertion(cipherText, CipherAction.Decrypt);
 
         #endregion
 
