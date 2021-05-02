@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Cryptography.Algorithms.Symmetric;
 using Cryptography.Arithmetic.GaloisField;
 
@@ -161,12 +162,12 @@ namespace Cryptography.Algorithms.Rijandel
             };
 
             var stateCopy = state.Clone() as byte[];
-            
-            state = stateCopy.Select((_, index) => substitutionTable[stateCopy[index]]).ToArray();
+
+            Parallel.For(0, state.Length, index => state[index] = substitutionTable[stateCopy[index]]);
         }
         private void AddRoundKey(byte[] state, byte[] roundkey)
         {
-            state = state.Select((number, index) => (byte)(number ^ roundkey[index])).ToArray();
+            Parallel.For(0, state.Length, index => state[index] = (byte) (state[index] ^ roundkey[index]));
         }
         
         public void ShiftRows(byte[] state, CipherAction cipherAction)
@@ -175,17 +176,17 @@ namespace Cryptography.Algorithms.Rijandel
             
             var countBytesInRow = Mode.Nb;
 
-            for (int i = 0; i < shifts.Length; i++)
+            Parallel.For(0, shifts.Length, index =>
             {
                 if (cipherAction is CipherAction.Decrypt)
-                    shifts[i] = countBytesInRow - shifts[i];
+                    shifts[index] = countBytesInRow - shifts[index];
 
-                var rowNumber = i + 1;
+                var rowNumber = index + 1;
                 
                 var row = RijandelUtils.GetRow(state, rowNumber, countBytesInRow);
-                RijandelUtils.CyclicShift(row, shifts[i]);
+                RijandelUtils.CyclicShift(row, shifts[index]);
                 RijandelUtils.SetRow(state, row, rowNumber, countBytesInRow);
-            }
+            });
         }
         private void MixColumns(byte[] state, CipherAction cipherAction)
         {
@@ -208,8 +209,8 @@ namespace Cryptography.Algorithms.Rijandel
                     }
                 }
             }
-            for (int index = 0; index < blockSize; ++index)
-                state[index] = numArray[index];
+
+            Parallel.For(0, blockSize, index => state[index] = numArray[index]);
         }
 
         #endregion
