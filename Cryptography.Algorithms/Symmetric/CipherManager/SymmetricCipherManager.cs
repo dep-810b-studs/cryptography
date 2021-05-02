@@ -29,6 +29,7 @@ namespace Cryptography.Algorithms.Symmetric.CipherManager
 
         private readonly Dictionary<CipherBlockSize, int> _cipherModes = new()
         {
+            [CipherBlockSize.Des] = 8,
             [CipherBlockSize.Small] = 16,
             [CipherBlockSize.Middle] = 24,
             [CipherBlockSize.Big] = 32,
