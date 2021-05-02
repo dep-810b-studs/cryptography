@@ -27,9 +27,11 @@ namespace Cryptography.Tests
             var rijandelUnderTest = new RijandelCipher();
             rijandelUnderTest.CipherBlockSize = cipherBlockSize; 
             
+            rijandelUnderTest.CreateRoundKeys(key);
+            
             //act
-            var cipherText = rijandelUnderTest.Encrypt(openText, key);
-            var actualdecryptionResult = rijandelUnderTest.Decrypt(cipherText, key);
+            var cipherText = rijandelUnderTest.Encrypt(openText);
+            var actualdecryptionResult = rijandelUnderTest.Decrypt(cipherText);
             //assert
             Assert.Equal(openText, actualdecryptionResult);
         }
