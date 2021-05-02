@@ -161,8 +161,6 @@ namespace Cryptography.Algorithms.DES
         #endregion
         
         private BitArray[] _roundKeys;
-        
-        private byte[] _key;
         private byte[] EncryptionConvertion(byte[] data, CipherAction cipherAction)
         {
             var message = new BitArray(data);
