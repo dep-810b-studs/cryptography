@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Cryptography.Algorithms.Symmetric.CipherStrategy;
 using Cryptography.Algorithms.Symmetric.Padding;
 
 namespace Cryptography.Algorithms.Symmetric.CipherManager
@@ -27,6 +28,8 @@ namespace Cryptography.Algorithms.Symmetric.CipherManager
         private readonly IPaddingService _paddingService;
         private CipherBlockSize _cipherBlockSize;
 
+        private readonly Dictionary<SymmetricCipherMode, ICipherStrategy> _cipherStrategies;
+
         private readonly Dictionary<CipherBlockSize, int> _cipherModes = new()
         {
             [CipherBlockSize.Des] = 8,
@@ -38,11 +41,12 @@ namespace Cryptography.Algorithms.Symmetric.CipherManager
         #endregion
         
         #region Manager API
-        
-        public SymmetricCipherManager(ISymmetricCipher symmetricCipher, IPaddingService paddingService)
+        public SymmetricCipherManager(ISymmetricCipher symmetricCipher, IPaddingService paddingService, 
+            Dictionary<SymmetricCipherMode, ICipherStrategy> cipherStrategies)
         {
-            _symmetricCipher = symmetricCipher;
             _paddingService = paddingService;
+            _cipherStrategies = cipherStrategies;
+            _symmetricCipher = symmetricCipher;
         }
 
         public byte[] Key { get; set; }
@@ -58,13 +62,7 @@ namespace Cryptography.Algorithms.Symmetric.CipherManager
                 _cipherBlockSize = value;
             }
         }
-
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="message"></param>
-        /// <returns></returns>
+        
         public byte[] Encrypt(byte[] message)
         {
             //todo: подумать над адекватной проверкой инициализации полей
@@ -81,22 +79,8 @@ namespace Cryptography.Algorithms.Symmetric.CipherManager
                 messageBlocks.Add(paddingInfo);
             }
 
-            var cipherText = new List<byte[]>();
-            
-            switch (CipherMode)
-            {
-                case SymmetricCipherMode.ElectronicCodeBook:
-                     cipherText = ElectronicCodeBook(messageBlocks, CipherAction.Encrypt);
-                    break;
-                case SymmetricCipherMode.CipherFeedback:
-                    throw new NotImplementedException();
-                case SymmetricCipherMode.OutputFeedback:
-                    throw new NotImplementedException();
-                case SymmetricCipherMode.CipherBlockChaining:
-                    throw new NotImplementedException();
-            }
-            
-            
+            _symmetricCipher.CreateRoundKeys(Key);
+            var cipherText = _cipherStrategies[CipherMode].Encrypt(_symmetricCipher, messageBlocks);
             return cipherText.SelectMany(block => block).ToArray();
         }
 
@@ -109,44 +93,10 @@ namespace Cryptography.Algorithms.Symmetric.CipherManager
 
             var messageBlocks = GroupBytesByBlocks(message, blockSizeInBytes);
 
-            var openText = new List<byte[]>();
-            
-            switch (CipherMode)
-            {
-                case SymmetricCipherMode.ElectronicCodeBook:
-                    openText = ElectronicCodeBook(messageBlocks, CipherAction.Decrypt);
-                    break;
-                case SymmetricCipherMode.CipherFeedback:
-                    break;
-                case SymmetricCipherMode.OutputFeedback:
-                    break;
-                case SymmetricCipherMode.CipherBlockChaining:
-                    break;
-            }
-
-            return openText.SelectMany(block => block).ToArray();;
-        }
-
-        #endregion
-
-        #region Modes
-
-        private List<byte[]> ElectronicCodeBook(List<byte[]> messageBlocks, CipherAction cipherAction)
-        {
-            var encryptedMessageblocks = new byte[messageBlocks.Count][];
-
-            Func<byte[], byte[], byte[]> cipherConvertion = cipherAction switch
-            {
-                CipherAction.Encrypt => _symmetricCipher.Encrypt,
-                CipherAction.Decrypt => _symmetricCipher.Decrypt
-            };
-            
-            Parallel.For(0, messageBlocks.Count, blockNumber =>
-            {
-                encryptedMessageblocks[blockNumber] = cipherConvertion(messageBlocks[blockNumber], Key);
-            });
-
-            return encryptedMessageblocks.ToList();
+            _symmetricCipher.CreateRoundKeys(Key);
+            var openText = _cipherStrategies[CipherMode].Decrypt(_symmetricCipher, messageBlocks);
+            _paddingService.RemovePaddedBytes(openText, blockSizeInBytes);
+            return openText.SelectMany(block => block).ToArray();
         }
 
         #endregion
