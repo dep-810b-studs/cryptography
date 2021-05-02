@@ -1,0 +1,105 @@
+﻿@using Cryptography.WebInterface.SymmetricCipher
+@using Microsoft.Extensions.Logging
+@using Cryptography.Algorithms.Symmetric
+@using System.IO
+@using Cryptography.Algorithms.Symmetric.CipherSystem
+@using BlazorDownloadFile
+@inject ILogger<RijndelForm> Logger
+@inject ISymmetricSystem SymmetricCipherSystem
+@inject IJSRuntime JsRuntime;
+
+
+<EditForm Model=@_cipherParamsModel OnValidSubmit="@HandleSubmit" class="rijndel-wrapper">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="rijndel-selections">
+        <h2>Block size </h2>
+        <InputRadioGroup @bind-Value=@_cipherParamsModel.CipherBlockSize>
+            <InputRadio Value=@CipherBlockSize.Small/> 128 бит <br/>
+            <InputRadio Value=@CipherBlockSize.Middle/> 192 бит <br/>
+            <InputRadio Value=@CipherBlockSize.Big/> 256 бит <br/>
+        </InputRadioGroup>
+        <h2>Cipher mode</h2>
+        <InputRadioGroup @bind-Value=@_cipherParamsModel.SymmetricCipherMode>
+            <InputRadio Value=@SymmetricCipherMode.ElectronicCodeBook/> @SymmetricCipherMode.ElectronicCodeBook <br/>
+            <InputRadio Value=@SymmetricCipherMode.CipherBlockChaining/> @SymmetricCipherMode.CipherBlockChaining <br/>
+            <InputRadio Value=@SymmetricCipherMode.CipherFeedback/> @SymmetricCipherMode.CipherFeedback <br/>
+            <InputRadio Value=@SymmetricCipherMode.OutputFeedback/> @SymmetricCipherMode.OutputFeedback <br/>
+        </InputRadioGroup>
+        <h2>Действие</h2>
+        <InputRadioGroup @bind-Value=@_cipherParamsModel.CipherAction>
+            <InputRadio Value=@CipherAction.Encrypt/> @CipherAction.Encrypt <br/>
+            <InputRadio Value=@CipherAction.Decrypt/> @CipherAction.Decrypt <br/>
+        </InputRadioGroup>
+        <button type="submit">@_cipherParamsModel.CipherAction</button>
+    </div>
+    <div class="rijndel-files">
+        <h2>Input File</h2>
+        <InputFile OnChange=@OnInputFileChange/>
+        <h2>Output File</h2>
+        <InputFile OnChange=@OnInputFileChange/>
+        <h2>Key</h2>
+        <InputFile OnChange=@OnKeyFileChange/>
+        <Button>GenerateRandom</Button>
+        <Button>Save To File</Button>
+        <h2>Initialization Vector</h2>
+        <InputFile OnChange=@OnInitVectorFileChange/>
+        <Button>GenerateRandom</Button>
+        <Button>Save To File</Button>
+    </div>
+    @if (fileProcessed)
+    {
+        <p>Loading...</p>
+    }
+</EditForm>
+
+@code {
+    private CipherParamsModel _cipherParamsModel = new()
+    {
+        CipherAction = CipherAction.Encrypt,
+        CipherBlockSize = CipherBlockSize.Small,
+        SymmetricCipherMode = SymmetricCipherMode.ElectronicCodeBook
+    };
+
+    private Stream _dataToProcess;
+    private byte[] _processedData;
+    private Stream _key;
+    private Stream _initializationFile;
+    private bool fileProcessed = false;
+
+    [Inject] IBlazorDownloadFileService BlazorDownloadFileService { get; set; }
+    
+    private async Task HandleSubmit()
+    {
+        if (fileProcessed)
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "Sorry, wait while another file encryption finished");
+            return;
+        }
+        fileProcessed = true;
+        Logger.LogInformation("file processing started");
+        _processedData = await SymmetricCipherSystem.HandleEncryption(_cipherParamsModel.CipherAction, _cipherParamsModel.SymmetricCipherMode,
+            _cipherParamsModel.CipherBlockSize, _dataToProcess, _key, _initializationFile);
+        fileProcessed = false;
+        BlazorDownloadFileService.ClearBuffers();
+        BlazorDownloadFileService.AddBuffer(_processedData);
+        BlazorDownloadFileService.DownloadBinaryBuffers("processed.jpg");
+        Logger.LogInformation("file processing finished");
+    }
+
+    private void OnInputFileChange(InputFileChangeEventArgs obj)
+    {
+        _dataToProcess = obj.File.OpenReadStream();
+    }
+    
+    private void OnKeyFileChange(InputFileChangeEventArgs obj)
+    {
+        _key = obj.File.OpenReadStream();
+    }
+    
+    private void OnInitVectorFileChange(InputFileChangeEventArgs obj)
+    {
+        _initializationFile = obj.File.OpenReadStream();
+    }
+
+}
