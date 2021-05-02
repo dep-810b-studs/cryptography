@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Cryptography.Algorithms.Utils;
 
 namespace Cryptography.Algorithms.Symmetric.CipherStrategy
 {
@@ -6,14 +10,29 @@ namespace Cryptography.Algorithms.Symmetric.CipherStrategy
     public class OutputFeedbackStrategy : ICipherStrategy
     {
         public byte[] InitializationVector { get; set; }
-        public List<byte[]> Encrypt(ISymmetricCipher symmetricCipher, List<byte[]> openText)
-        {
-            throw new System.NotImplementedException();
-        }
 
-        public List<byte[]> Decrypt(ISymmetricCipher symmetricCipher, List<byte[]> cipherText)
+        public List<byte[]> Encrypt(ISymmetricCipher symmetricCipher, List<byte[]> openText) =>
+            EncryptionConvertion(symmetricCipher, openText);
+
+        public List<byte[]> Decrypt(ISymmetricCipher symmetricCipher, List<byte[]> cipherText) =>
+            EncryptionConvertion(symmetricCipher, cipherText);
+        
+        private List<byte[]> EncryptionConvertion(ISymmetricCipher symmetricCipher, List<byte[]> cipherText)
         {
-            throw new System.NotImplementedException();
+            var c = InitializationVector;
+
+            var encryptedMessage = new byte[cipherText.Count][];
+
+            for (int i = 0; i < encryptedMessage.Length; i++)
+            {
+                encryptedMessage[i] = symmetricCipher.Encrypt(c);
+                c = encryptedMessage[i];
+            }
+
+            Parallel.For(0,encryptedMessage.Length, 
+                blockNumber => encryptedMessage[blockNumber] = CipherUtils.XorByteArrays(cipherText[blockNumber], encryptedMessage[blockNumber]));
+
+            return encryptedMessage.ToList();
         }
     }
 }
