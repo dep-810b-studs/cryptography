@@ -27,6 +27,7 @@ namespace Cryptography.Algorithms.Symmetric.CipherManager
         private readonly ISymmetricCipher _symmetricCipher;
         private readonly IPaddingService _paddingService;
         private CipherBlockSize _cipherBlockSize;
+        private byte[] _initializationVector;
 
         private readonly Dictionary<SymmetricCipherMode, ICipherStrategy> _cipherStrategies;
 
@@ -50,7 +51,16 @@ namespace Cryptography.Algorithms.Symmetric.CipherManager
         }
 
         public byte[] Key { get; set; }
-        public byte[] InitializationVector { get; set; }
+
+        public byte[] InitializationVector
+        {
+            get => _initializationVector;
+            set
+            {
+                _cipherStrategies[CipherMode].InitializationVector = value;
+                _initializationVector = value;
+            }
+        }
         public SymmetricCipherMode CipherMode { get; set; }
 
         public CipherBlockSize CipherBlockSize
@@ -66,6 +76,10 @@ namespace Cryptography.Algorithms.Symmetric.CipherManager
         public byte[] Encrypt(byte[] message)
         {
             //todo: подумать над адекватной проверкой инициализации полей
+
+            if (CipherMode is not SymmetricCipherMode.ElectronicCodeBook && InitializationVector is null)
+                throw new ArgumentNullException(nameof(InitializationVector),
+                    "You should specify IV before encryption");
             
             var blockSizeInBytes = _cipherModes[CipherBlockSize];
             var messageBlocks = GroupBytesByBlocks(message, blockSizeInBytes);
@@ -86,6 +100,10 @@ namespace Cryptography.Algorithms.Symmetric.CipherManager
 
         public byte[] Decrypt(byte[] message)
         {
+            if (CipherMode is not SymmetricCipherMode.ElectronicCodeBook && InitializationVector is null)
+                throw new ArgumentNullException(nameof(InitializationVector),
+                    "You should specify IV before encryption");
+            
             var blockSizeInBytes = _cipherModes[CipherBlockSize];
 
             if (message.Length % blockSizeInBytes != 0)
