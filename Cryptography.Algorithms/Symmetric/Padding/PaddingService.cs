@@ -1,13 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace Cryptography.Algorithms.Symmetric.Padding
 {
     public interface IPaddingService
     {
         (byte[] FilledData, byte [] PaddingInfo) FillEmptyBytes(byte[] data, int blockSizeInBytes);
-        PaddingInfo TryGetPaddingInfo(byte[] paddingInfoSource);
+        void RemovePaddedBytes(List<byte[]> data, int blockSizeInBytes);
     }
     
     public class PaddingService : IPaddingService
@@ -27,10 +30,15 @@ namespace Cryptography.Algorithms.Symmetric.Padding
             return (filledData, paddingInfoInBytes);
         }
 
-        public PaddingInfo TryGetPaddingInfo(byte[] paddingInfoSource)
+        public void RemovePaddedBytes(List<byte[]> data, int blockSizeInBytes)
         {
-            var paddingInfo = new PaddingInfo(paddingInfoSource[0]);
-            return paddingInfo;
+            var countPaddedBytes = data.Last().First();
+            data.Remove(data.Last());
+            var paddedBlock = data.Last();
+            var blockWithOutPaddingLength = blockSizeInBytes - countPaddedBytes;
+            var blockWithOutPadding = paddedBlock[..blockWithOutPaddingLength];
+            data.Remove(paddedBlock);
+            data.Add(blockWithOutPadding);
         }
     }
 }
