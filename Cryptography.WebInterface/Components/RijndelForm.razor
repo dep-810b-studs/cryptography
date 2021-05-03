@@ -36,21 +36,11 @@
     <div class="rijndel-files">
         <h2>Input File</h2>
         <InputFile OnChange=@OnInputFileChange/>
-        <h2>Output File</h2>
-        <InputFile OnChange=@OnInputFileChange/>
         <h2>Key</h2>
         <InputFile OnChange=@OnKeyFileChange/>
-        <Button>GenerateRandom</Button>
-        <Button>Save To File</Button>
         <h2>Initialization Vector</h2>
         <InputFile OnChange=@OnInitVectorFileChange/>
-        <Button>GenerateRandom</Button>
-        <Button>Save To File</Button>
     </div>
-    @if (fileProcessed)
-    {
-        <p>Loading...</p>
-    }
 </EditForm>
 
 @code {
@@ -65,22 +55,14 @@
     private byte[] _processedData;
     private Stream _key;
     private Stream _initializationFile;
-    private bool fileProcessed = false;
 
     [Inject] IBlazorDownloadFileService BlazorDownloadFileService { get; set; }
     
     private async Task HandleSubmit()
     {
-        if (fileProcessed)
-        {
-            await JsRuntime.InvokeVoidAsync("alert", "Sorry, wait while another file encryption finished");
-            return;
-        }
-        fileProcessed = true;
         Logger.LogInformation("file processing started");
         _processedData = await SymmetricCipherSystem.HandleEncryption(_cipherParamsModel.CipherAction, _cipherParamsModel.SymmetricCipherMode,
             _cipherParamsModel.CipherBlockSize, _dataToProcess, _key, _initializationFile);
-        fileProcessed = false;
         BlazorDownloadFileService.ClearBuffers();
         BlazorDownloadFileService.AddBuffer(_processedData);
         BlazorDownloadFileService.DownloadBinaryBuffers("processed.jpg");
