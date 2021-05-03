@@ -5,4 +5,5 @@
 - [Лабораторная работа №3](https://github.com/dep-810b-studs/cryptography/tree/master/Cryptography.Arithmetic/GaloisField) Поля Галуа
 - [Реализация алгоритма RSA](https://github.com/dep-810b-studs/cryptography/blob/master/Cryptography.Algorithms/RSA/RSACipher.cs)
 - [Реализация алгоритма Rijandel](https://github.com/dep-810b-studs/cryptography/blob/master/Cryptography.Algorithms/Rijandel/RijandelCipher.cs)
+- [Реализация алгоритма Des](https://github.com/dep-810b-studs/cryptography/blob/master/Cryptography.Algorithms/DES/DesCipher.cs)
 - [Автотесты](https://github.com/dep-810b-studs/cryptography/tree/master/Cryptography.Autotests)
