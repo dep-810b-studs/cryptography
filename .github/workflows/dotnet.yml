@@ -23,7 +23,7 @@ jobs:
       run: |
         export PATH="$PATH:/root/.dotnet/tools"
         dotnet tool install --global coverlet.console
-        coverlet "./$TEST_PROJECT_NAME/$PATH_TO_ASSEMBLY/$TEST_PROJECT_NAME.dll" --target "dotnet" --targetargs "test ./$TEST_PROJECT_NAME/$TEST_PROJECT_NAME.csproj --no-build" --merge-with ./coverage.json
+        coverlet "./Tests/$TEST_PROJECT_NAME/$PATH_TO_ASSEMBLY/$TEST_PROJECT_NAME.dll" --target "dotnet" --targetargs "test ./Tests/$TEST_PROJECT_NAME/$TEST_PROJECT_NAME.csproj --no-build" --merge-with ./coverage.json
         dotnet test  --verbosity normal
   functional_tests:
     name: Functional tests for demo app
