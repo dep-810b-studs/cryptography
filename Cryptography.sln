@@ -1,14 +1,24 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptography.Arithmetic", "Cryptography.Arithmetic\Cryptography.Arithmetic.csproj", "{CCBB3E2E-5902-4197-AA0E-044DFCDAABA7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptography.Arithmetic", "Core\Cryptography.Arithmetic\Cryptography.Arithmetic.csproj", "{CCBB3E2E-5902-4197-AA0E-044DFCDAABA7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptography.Tests", "Cryptography.Tests\Cryptography.Tests.csproj", "{862114AA-458F-4C3B-A0A1-D487D6CDB467}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptography.Tests", "Tests\Cryptography.Tests\Cryptography.Tests.csproj", "{862114AA-458F-4C3B-A0A1-D487D6CDB467}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptography.DemoApplication", "Cryptography.DemoApplication\Cryptography.DemoApplication.csproj", "{CB94C3A3-24B7-4A95-A4F4-AD4E5FB3CE77}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptography.Algorithms", "Cryptography.Algorithms\Cryptography.Algorithms.csproj", "{9B0BF112-FBB9-4E8A-8E50-3AC3DA8D9525}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptography.Algorithms", "Core\Cryptography.Algorithms\Cryptography.Algorithms.csproj", "{9B0BF112-FBB9-4E8A-8E50-3AC3DA8D9525}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptography.WebInterface", "Cryptography.WebInterface\Cryptography.WebInterface.csproj", "{1D50AFC4-629E-44FC-9041-0D57EFFBCEBB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptography.WebInterface.ServerSideApp", "WebInterface\Cryptography.WebInterface.ServerSideApp\Cryptography.WebInterface.ServerSideApp.csproj", "{1D50AFC4-629E-44FC-9041-0D57EFFBCEBB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebInterface", "WebInterface", "{7F63A9D7-6100-4D86-8D59-66932FD86906}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptography.WebInterface.ClientSideApp", "WebInterface\Cryptography.WebInterface.ClientSideApp\Cryptography.WebInterface.ClientSideApp.csproj", "{287E701B-0864-4509-91FE-2B9B463854D2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptography.WebInterface.Common", "WebInterface\Cryptography.WebInterface.Common\Cryptography.WebInterface.Common.csproj", "{538EAB25-FF15-43DD-B8DB-4E837A0A8E4B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{E544A9FD-0C51-42AF-9562-D9995D5B5FC8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{33F4D428-52DD-48F4-84AD-AA81D5CE375C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,5 +46,21 @@ Global
 		{1D50AFC4-629E-44FC-9041-0D57EFFBCEBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1D50AFC4-629E-44FC-9041-0D57EFFBCEBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1D50AFC4-629E-44FC-9041-0D57EFFBCEBB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{287E701B-0864-4509-91FE-2B9B463854D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{287E701B-0864-4509-91FE-2B9B463854D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{287E701B-0864-4509-91FE-2B9B463854D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{287E701B-0864-4509-91FE-2B9B463854D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{538EAB25-FF15-43DD-B8DB-4E837A0A8E4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{538EAB25-FF15-43DD-B8DB-4E837A0A8E4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{538EAB25-FF15-43DD-B8DB-4E837A0A8E4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{538EAB25-FF15-43DD-B8DB-4E837A0A8E4B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1D50AFC4-629E-44FC-9041-0D57EFFBCEBB} = {7F63A9D7-6100-4D86-8D59-66932FD86906}
+		{287E701B-0864-4509-91FE-2B9B463854D2} = {7F63A9D7-6100-4D86-8D59-66932FD86906}
+		{538EAB25-FF15-43DD-B8DB-4E837A0A8E4B} = {7F63A9D7-6100-4D86-8D59-66932FD86906}
+		{9B0BF112-FBB9-4E8A-8E50-3AC3DA8D9525} = {E544A9FD-0C51-42AF-9562-D9995D5B5FC8}
+		{CCBB3E2E-5902-4197-AA0E-044DFCDAABA7} = {E544A9FD-0C51-42AF-9562-D9995D5B5FC8}
+		{862114AA-458F-4C3B-A0A1-D487D6CDB467} = {33F4D428-52DD-48F4-84AD-AA81D5CE375C}
 	EndGlobalSection
 EndGlobal

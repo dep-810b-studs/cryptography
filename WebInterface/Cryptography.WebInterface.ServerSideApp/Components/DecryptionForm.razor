@@ -1,0 +1,51 @@
+﻿@namespace Cryptography.WebInterface.Components  
+@using Cryptography.WebInterface.ServerSideApp.Rsa
+@using Cryptography.Algorithms.RSA
+@inject IRsaEncryptionSystem EncryptionSystem
+@inject IJSRuntime JsRuntime;
+
+<div class="decyption-page">
+    <h2>Введите текст для расшифровки</h2>
+    <p>
+        <input @bind="message"/>
+    </p>
+    <h2>Введите N</h2>
+    <input @bind="N"/>
+    <h2>Введите закрытую экспоненту</h2>
+    <input @bind="exponent"/>
+    <Button @onclick="Encrypt">
+        Расшифровать
+    </Button>
+    <h2>Исходный текст</h2>
+    <textarea>@SourceText</textarea>
+</div>
+
+@code {
+    [Parameter] 
+    public RSAEncryptionResult EncryptionResult { get; set; } 
+    
+    private string message;
+    private string N;
+
+    private string exponent;
+    private string SourceText;
+    
+    private async Task Encrypt()
+    {
+        var decryptionResult = string.Empty;
+
+        N ??= EncryptionResult.PublicKey.N.ToString();
+        exponent ??= EncryptionResult.SecretKey.d.ToString();
+        
+        try
+        {
+            decryptionResult = EncryptionSystem.Decrypt(message, N, exponent);
+        }
+        catch (Exception e)
+        {
+            await JsRuntime.InvokeVoidAsync("alert", e.StackTrace ?? e.Message);
+        }
+
+        SourceText = decryptionResult;
+    }
+}

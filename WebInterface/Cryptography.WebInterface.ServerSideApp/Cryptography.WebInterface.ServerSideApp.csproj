@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Core\Cryptography.Algorithms\Cryptography.Algorithms.csproj" />
+      <ProjectReference Include="..\..\Core\Cryptography.Arithmetic\Cryptography.Arithmetic.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="BlazorDownloadFile" Version="2.1.6" />
+    </ItemGroup>
+
+</Project>
