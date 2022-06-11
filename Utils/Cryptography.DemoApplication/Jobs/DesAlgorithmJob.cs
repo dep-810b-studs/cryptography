@@ -1,5 +1,4 @@
-﻿using Cryptography.Algorithms;
-using Cryptography.Algorithms.DES;
+﻿using Cryptography.Algorithms.DES;
 using Cryptography.Algorithms.Symmetric;
 
 namespace Cryptography.DemoApplication.Jobs

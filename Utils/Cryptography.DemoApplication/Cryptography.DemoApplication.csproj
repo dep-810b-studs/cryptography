@@ -6,8 +6,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Cryptography.Algorithms\Cryptography.Algorithms.csproj" />
-      <ProjectReference Include="..\Cryptography.Arithmetic\Cryptography.Arithmetic.csproj" />
+      <ProjectReference Include="..\..\Core\Cryptography.Algorithms\Cryptography.Algorithms.csproj" />
+      <ProjectReference Include="..\..\Core\Cryptography.Arithmetic\Cryptography.Arithmetic.csproj" />
     </ItemGroup>
 
 </Project>
