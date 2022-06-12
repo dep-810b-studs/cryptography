@@ -32,6 +32,6 @@ jobs:
       - uses: actions/checkout@v1
       - name: Test
         run: |
-          cd ./Cryptography.Autotests
+          cd ./Tests/Cryptography.Autotests
           chmod +x ./run_tests.sh
           ./run_tests.sh
