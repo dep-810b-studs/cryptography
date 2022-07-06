@@ -11,7 +11,7 @@
     },
     "RunAndWatch": {
       "commandName": "Executable",
-      "executablePath": "dotnet.exe",
+      "executablePath": "dotnet",
       "workingDirectory": "$(ProjectDir)",
       "commandLineArgs": "watch run",
       "launchBrowser": true,
