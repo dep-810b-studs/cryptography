@@ -1,60 +1,58 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Cryptography.DemoApplication.Jobs;
 
-namespace Cryptography.DemoApplication
+namespace Cryptography.DemoApplication;
+
+public static class JobExecutor
 {
-    public static class JobExecutor
+    static JobExecutor()
     {
-        public static Dictionary<string, IDemoApplicationJobs> SupportedJobs { get; }
-        static JobExecutor()
-        {
-            var jobsInAssemblies =
-                from a in AppDomain.CurrentDomain.GetAssemblies()
-                from t in a.GetTypes()
-                let attributes = t.GetCustomAttributes(typeof(JobAttribute), true)
-                where attributes != null && attributes.Length > 0
-                select new { Type = t, JobName = attributes.Cast<JobAttribute>().First().Name };
+        var jobsInAssemblies =
+            from a in AppDomain.CurrentDomain.GetAssemblies()
+            from t in a.GetTypes()
+            let attributes = t.GetCustomAttributes(typeof(JobAttribute), true)
+            where attributes != null && attributes.Length > 0
+            select new { Type = t, JobName = attributes.Cast<JobAttribute>().First().Name };
 
-            SupportedJobs = jobsInAssemblies
-                .ToDictionary(k => k.JobName, v => Activator.CreateInstance(v.Type) as IDemoApplicationJobs);
-        }
+        SupportedJobs = jobsInAssemblies
+            .ToDictionary(k => k.JobName, v => Activator.CreateInstance(v.Type) as IDemoApplicationJobs);
+    }
 
-        public static void Run(IDemoApplicationJobs jobs)
+    public static Dictionary<string, IDemoApplicationJobs> SupportedJobs { get; }
+
+    public static void Run(IDemoApplicationJobs jobs)
+    {
+        while (true)
         {
-            while (true)
+            Console.WriteLine("Please, enter task number (h to help, q to exit)");
+            var userChoice = Console.ReadLine();
+
+            if (userChoice == "q")
+                return;
+
+            switch (userChoice)
             {
-                Console.WriteLine("Please, enter task number (h to help, q to exit)");
-                var userChoice = Console.ReadLine();
-
-                if (userChoice == "q")
-                    return;
-
-                switch (userChoice)
-                {
-                    case "q": return;
-                    case "h":
-                        Console.WriteLine(jobs.Help());
-                        continue;
-                }
-                
-                if(!Int32.TryParse(userChoice, out var jobNumber))
-                {
-                    Console.WriteLine("Entered symbols cant be parsed as ints");
+                case "q": return;
+                case "h":
+                    Console.WriteLine(jobs.Help());
                     continue;
-                }
-    
-                try
-                {
-                    var selectedJob = jobs.GetJob(jobNumber);
-                    selectedJob.DynamicInvoke();  
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine($"Error occured during program working: {e.InnerException?.Message ?? e.Message}");
-                }
+            }
 
+            if (!int.TryParse(userChoice, out var jobNumber))
+            {
+                Console.WriteLine("Entered symbols cant be parsed as ints");
+                continue;
+            }
+
+            try
+            {
+                var selectedJob = jobs.GetJob(jobNumber);
+                selectedJob.DynamicInvoke();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error occured during program working: {e.InnerException?.Message ?? e.Message}");
             }
         }
     }

@@ -7,29 +7,25 @@ using Cryptography.Algorithms.Symmetric.CipherManager;
 using Cryptography.Algorithms.Symmetric.CipherStrategy;
 using Cryptography.Algorithms.Symmetric.CipherSystem;
 using Cryptography.Algorithms.Symmetric.Padding;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.JSInterop;
 
-namespace Cryptography.WebInterface.ServerSideApp.SymmetricCipher
+namespace Cryptography.WebInterface.ServerSideApp.SymmetricCipher;
+
+public static class ConfigurationsExtensions
 {
-    public static class ConfigurationsExtensions
+    public static void ConfigureRijndel(this IServiceCollection services)
     {
-        public static void ConfigureRijndel(this IServiceCollection services)
+        services.AddSingleton<ISymmetricCipher, RijandelCipher>();
+        services.AddSingleton(new Dictionary<SymmetricCipherMode, ICipherStrategy>
         {
-            services.AddSingleton<ISymmetricCipher, RijandelCipher>();
-            services.AddSingleton<Dictionary<SymmetricCipherMode, ICipherStrategy>>(new Dictionary<SymmetricCipherMode, ICipherStrategy>()
-            {
-                [SymmetricCipherMode.ElectronicCodeBook] = new ElectronicCodeBookStrategy(),
-                [SymmetricCipherMode.CipherBlockChaining] = new CipherBlockChainingStrategy(),
-                [SymmetricCipherMode.CipherFeedback] = new CipherFeedbackStrategy(),
-                [SymmetricCipherMode.OutputFeedback] = new OutputFeedbackStrategy()
-            });
-            services.AddSingleton<IPaddingService, PaddingService>();
-            services.AddSingleton<ISymmetricCipherManager, SymmetricCipherManager>();
-            services.AddSingleton<ISymmetricSystem, SymmetricSystem>();
-            services.AddBlazorDownloadFile();
-        }
+            [SymmetricCipherMode.ElectronicCodeBook] = new ElectronicCodeBookStrategy(),
+            [SymmetricCipherMode.CipherBlockChaining] = new CipherBlockChainingStrategy(),
+            [SymmetricCipherMode.CipherFeedback] = new CipherFeedbackStrategy(),
+            [SymmetricCipherMode.OutputFeedback] = new OutputFeedbackStrategy()
+        });
+        services.AddSingleton<IPaddingService, PaddingService>();
+        services.AddSingleton<ISymmetricCipherManager, SymmetricCipherManager>();
+        services.AddSingleton<ISymmetricSystem, SymmetricSystem>();
+        services.AddBlazorDownloadFile();
     }
 }

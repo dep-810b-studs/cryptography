@@ -1,8 +1,7 @@
-﻿@namespace Cryptography.WebInterface.Components  
-@using Cryptography.WebInterface.ServerSideApp.Rsa
-@using System.ComponentModel.DataAnnotations
-@using Cryptography.Algorithms.RSA
+﻿@using Cryptography.Algorithms.RSA
 @using Cryptography.Algorithms.Utils
+@namespace Cryptography.WebInterface.Components
+
 @inject IJSRuntime JsRuntime;
 @inject IRsaEncryptionSystem EncryptionSystem
 @inject IMessageConvertor Convertor
@@ -19,7 +18,7 @@
     <h2>Введите открытую экспоненту</h2>
     <input @bind="exponent"/>
     <Button @onclick="GenerateRandomKey">
-       Сгенерировать случайные p и q 
+        Сгенерировать случайные p и q
     </Button>
     <Button @onclick="Encrypt">
         Зашифровать
@@ -31,13 +30,13 @@
 <div class="decryption-page">
     <h2>Введите текст для расшифровки</h2>
     <p>
-        <input @bind=@encryptedMessage/>
+        <input @bind="@encryptedMessage"/>
     </p>
     <h2>Введите N</h2>
-    <input @bind=@N/>
+    <input @bind="@N"/>
     <h2>Введите закрытую экспоненту</h2>
-    <input @bind=@secretExponent/>
-    <Button @onclick=@Decrypt>
+    <input @bind="@secretExponent"/>
+    <Button @onclick="@Decrypt">
         Расшифровать
     </Button>
     <h2>Исходный текст</h2>
@@ -55,7 +54,7 @@
 
     private string secretExponent;
     private string SourceText;
-    
+
     private async Task Encrypt()
     {
         (string,ulong) encryptionResult = default;
@@ -71,11 +70,11 @@
         CipherText = encryptionResult.Item1;
         secretExponent = encryptionResult.Item2.ToString();
     }
-    
+
     private async Task Decrypt()
     {
         var decryptionResult = string.Empty;
-        
+
         try
         {
             decryptionResult = EncryptionSystem.Decrypt(encryptedMessage, N, secretExponent);
@@ -87,24 +86,24 @@
 
         SourceText = decryptionResult;
     }
-    
+
     private async Task GenerateRandomKey()
     {
         try
         {
             var p = EncryptionSystem.GetRandomPrimeNumber(50000, number => number > 900);
 
-            ulong q = EncryptionSystem.GetRandomPrimeNumber(50000,
-                    number => number > 900 && number != (int) p);
+            var q = EncryptionSystem.GetRandomPrimeNumber(50000,
+                number => number > 900 && number != (int)p);
 
             P = p.ToString();
             Q = q.ToString();
             N = (p * q).ToString();
-
         }
         catch (Exception e)
         {
             await JsRuntime.InvokeVoidAsync("alert", e.ToString());
         }
     }
+
 }

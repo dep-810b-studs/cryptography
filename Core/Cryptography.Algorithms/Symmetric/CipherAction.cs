@@ -1,8 +1,7 @@
-﻿namespace Cryptography.Algorithms.Symmetric
+﻿namespace Cryptography.Algorithms.Symmetric;
+
+public enum CipherAction
 {
-    public enum CipherAction
-    {
-        Encrypt,
-        Decrypt
-    }
+    Encrypt,
+    Decrypt
 }

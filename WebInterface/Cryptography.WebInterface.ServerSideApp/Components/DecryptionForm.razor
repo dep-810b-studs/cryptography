@@ -1,6 +1,6 @@
-﻿@namespace Cryptography.WebInterface.Components  
-@using Cryptography.WebInterface.ServerSideApp.Rsa
-@using Cryptography.Algorithms.RSA
+﻿@using Cryptography.Algorithms.RSA
+@namespace Cryptography.WebInterface.Components
+
 @inject IRsaEncryptionSystem EncryptionSystem
 @inject IJSRuntime JsRuntime;
 
@@ -21,22 +21,23 @@
 </div>
 
 @code {
-    [Parameter] 
-    public RSAEncryptionResult EncryptionResult { get; set; } 
-    
+
+    [Parameter]
+    public RSAEncryptionResult EncryptionResult { get; set; }
+
     private string message;
     private string N;
 
     private string exponent;
     private string SourceText;
-    
+
     private async Task Encrypt()
     {
         var decryptionResult = string.Empty;
 
         N ??= EncryptionResult.PublicKey.N.ToString();
         exponent ??= EncryptionResult.SecretKey.d.ToString();
-        
+
         try
         {
             decryptionResult = EncryptionSystem.Decrypt(message, N, exponent);
@@ -48,4 +49,5 @@
 
         SourceText = decryptionResult;
     }
+
 }

@@ -1,12 +1,11 @@
 ﻿using Cryptography.Algorithms.Symmetric;
 
-namespace Cryptography.Algorithms
+namespace Cryptography.Algorithms;
+
+public interface ISymmetricCipher
 {
-    public interface ISymmetricCipher
-    {
-        CipherBlockSize CipherBlockSize { get; set; }
-        byte[] Encrypt(byte[] openText);
-        byte[] Decrypt(byte[] encryptedText);
-        void CreateRoundKeys(byte[] key);
-    }
+    CipherBlockSize CipherBlockSize { get; set; }
+    byte[] Encrypt(byte[] openText);
+    byte[] Decrypt(byte[] encryptedText);
+    void CreateRoundKeys(byte[] key);
 }

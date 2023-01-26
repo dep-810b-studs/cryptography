@@ -1,10 +1,9 @@
 ﻿using System;
 
-namespace Cryptography.DemoApplication
+namespace Cryptography.DemoApplication;
+
+public interface IDemoApplicationJobs
 {
-    public interface IDemoApplicationJobs
-    {
-        Delegate GetJob(int jobNumber);
-        string Help();
-    }
+    Delegate GetJob(int jobNumber);
+    string Help();
 }

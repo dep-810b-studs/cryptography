@@ -1,8 +1,7 @@
-﻿namespace Cryptography.Arithmetic.GaloisField
+﻿namespace Cryptography.Arithmetic.GaloisField;
+
+public enum MultiplicativeInverseCalculationWay
 {
-    public enum MultiplicativeInverseCalculationWay
-    {
-        ExtendedEuclideanAlgorithm,
-        Exponentiation
-    }
+    ExtendedEuclideanAlgorithm,
+    Exponentiation
 }

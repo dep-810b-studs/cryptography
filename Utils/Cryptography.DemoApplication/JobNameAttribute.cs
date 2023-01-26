@@ -1,13 +1,14 @@
-﻿namespace Cryptography.DemoApplication
-{
-    [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple = false)]
-    public class JobAttribute : System.Attribute
-    {
-        public string Name { get; init; }
+﻿using System;
 
-        public JobAttribute(string name)
-        {
-            Name = name;
-        }
+namespace Cryptography.DemoApplication;
+
+[AttributeUsage(AttributeTargets.Class)]
+public class JobAttribute : Attribute
+{
+    public JobAttribute(string name)
+    {
+        Name = name;
     }
+
+    public string Name { get; init; }
 }

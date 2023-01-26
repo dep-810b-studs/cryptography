@@ -1,73 +1,71 @@
 ﻿using System;
 using System.Linq;
-using Cryptography.Algorithms.RSA;
 using Cryptography.Algorithms.Utils;
 using Cryptography.Arithmetic.ResidueNumberSystem;
 
-namespace Cryptography.Algorithms.RSA
+namespace Cryptography.Algorithms.RSA;
+
+public interface IRsaEncryptionSystem
 {
-    public interface IRsaEncryptionSystem
+    (string, ulong) Encrypt(string message, string P, string Q, string e);
+    string Decrypt(string message, string N, string D);
+    ulong GetRandomPrimeNumber(int max, Func<int, bool> isNumberValid);
+}
+
+public class RsaEncryptionSystem : IRsaEncryptionSystem
+{
+    private readonly IMessageConvertor _messageConvertor;
+    private readonly Random _random = new();
+    private readonly IResidueNumberSystem _residueNumberSystem;
+    private readonly IRSACipher _rsaCipher;
+
+    public RsaEncryptionSystem(IMessageConvertor messageConvertor, IRSACipher rsaCipher,
+        IResidueNumberSystem residueNumberSystem)
     {
-        (string, ulong) Encrypt(string message, string P, string Q, string e);
-        string Decrypt(string message, string N, string D);
-        ulong GetRandomPrimeNumber(int max, Func<int, bool> isNumberValid);
+        _messageConvertor = messageConvertor;
+        _rsaCipher = rsaCipher;
+        _residueNumberSystem = residueNumberSystem;
     }
 
-    public class RsaEncryptionSystem : IRsaEncryptionSystem
+    public (string, ulong) Encrypt(string message, string P, string Q, string e)
     {
-        private readonly IMessageConvertor _messageConvertor;
-        private readonly IRSACipher _rsaCipher;
-        private readonly IResidueNumberSystem _residueNumberSystem;
-        private readonly Random _random = new ();
+        var convertedMessage = _messageConvertor.ConvertToLong(message);
+        var convertedP = uint.Parse(P);
+        var convertedQ = uint.Parse(Q);
+        var convertedE = ulong.Parse(e);
+        var encryptedMessage = _rsaCipher.EnCrypt(convertedMessage,
+            convertedP, convertedQ, convertedE);
 
-        public RsaEncryptionSystem(IMessageConvertor messageConvertor, IRSACipher rsaCipher, IResidueNumberSystem residueNumberSystem)
+        return (encryptedMessage.CipherText.ToString(), encryptedMessage.SecretKey.d);
+    }
+
+    public string Decrypt(string message, string N, string D)
+    {
+        var convertedMessage = ulong.Parse(message);
+        var convertedN = uint.Parse(N);
+        var convertedD = ulong.Parse(D);
+
+        var encryptionResult = new RSAEncryptionResult
         {
-            _messageConvertor = messageConvertor;
-            _rsaCipher = rsaCipher;
-            _residueNumberSystem = residueNumberSystem;
-        }
+            CipherText = convertedMessage,
+            PublicKey = (convertedN, 0),
+            SecretKey = (convertedD, 0, 0)
+        };
 
-        public (string, ulong) Encrypt(string message, string P, string Q, string e)
+        var decryptedMessage = _rsaCipher.DeCrypt(encryptionResult);
+
+        return _messageConvertor.ConvertToString(decryptedMessage);
+    }
+
+    public ulong GetRandomPrimeNumber(int max, Func<int, bool> isNumberValid)
+    {
+        var primeNumbers = _residueNumberSystem.GetSimpleNumbersLessThenM(max).ToArray();
+
+        while (true)
         {
-            var convertedMessage = _messageConvertor.ConvertToLong(message);
-            var convertedP = UInt32.Parse(P);
-            var convertedQ = UInt32.Parse(Q);
-            var convertedE = UInt64.Parse(e);
-            var encryptedMessage = _rsaCipher.EnCrypt(convertedMessage,
-                convertedP, convertedQ, convertedE);
-
-            return (encryptedMessage.CipherText.ToString(), encryptedMessage.SecretKey.d);
-        }
-
-        public string Decrypt(string message, string N, string D)
-        {
-            var convertedMessage = UInt64.Parse(message); 
-            var convertedN = UInt32.Parse(N);
-            var convertedD = UInt64.Parse(D);
-
-            var encryptionResult = new RSAEncryptionResult
-            {
-                CipherText = convertedMessage,
-                PublicKey = (convertedN,0),
-                SecretKey = (convertedD, 0, 0)
-            };
-
-            var decryptedMessage = _rsaCipher.DeCrypt(encryptionResult);
-
-            return _messageConvertor.ConvertToString(decryptedMessage);
-        }
-
-        public ulong GetRandomPrimeNumber(int max, Func<int, bool> isNumberValid)
-        {
-            var primeNumbers = _residueNumberSystem.GetSimpleNumbersLessThenM(max).ToArray();
-
-            while (true)
-            {
-                var randomPrime = primeNumbers[_random.Next(primeNumbers.Length - 1)];
-                if (isNumberValid(randomPrime))
-                    return (ulong) randomPrime;
-            }
+            var randomPrime = primeNumbers[_random.Next(primeNumbers.Length - 1)];
+            if (isNumberValid(randomPrime))
+                return (ulong)randomPrime;
         }
     }
-    
 }

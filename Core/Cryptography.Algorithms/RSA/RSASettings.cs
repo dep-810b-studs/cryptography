@@ -1,9 +1,8 @@
-﻿namespace Cryptography.Algorithms.RSA
+﻿namespace Cryptography.Algorithms.RSA;
+
+public class RSASettings
 {
-    public class RSASettings
-    {
-        public uint PrimeNumberCountBitsMin { get; init; }
-        
-        public uint PrimeNumberCountBitsMax { get; init; }
-    }
+    public uint PrimeNumberCountBitsMin { get; init; }
+
+    public uint PrimeNumberCountBitsMax { get; init; }
 }

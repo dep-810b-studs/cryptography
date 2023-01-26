@@ -5,13 +5,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Core\Cryptography.Algorithms\Cryptography.Algorithms.csproj" />
-      <ProjectReference Include="..\..\Core\Cryptography.Arithmetic\Cryptography.Arithmetic.csproj" />
+        <ProjectReference Include="..\..\Core\Cryptography.Algorithms\Cryptography.Algorithms.csproj"/>
+        <ProjectReference Include="..\..\Core\Cryptography.Arithmetic\Cryptography.Arithmetic.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="BlazorDownloadFile" Version="2.1.6" />
-      <PackageReference Include="Radzen.Blazor" Version="3.18.14" />
+        <PackageReference Include="BlazorDownloadFile" Version="2.1.6"/>
+        <PackageReference Include="Radzen.Blazor" Version="3.18.14"/>
     </ItemGroup>
 
 </Project>

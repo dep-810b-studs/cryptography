@@ -1,4 +1,4 @@
-﻿.encryption-page{
+﻿.encryption-page {
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -7,7 +7,7 @@
     width: 50%;
 }
 
-.decryption-page{
+.decryption-page {
     display: flex;
     align-items: center;
     flex-direction: column;

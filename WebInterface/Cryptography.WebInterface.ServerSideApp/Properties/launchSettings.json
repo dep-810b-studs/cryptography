@@ -15,7 +15,9 @@
       "workingDirectory": "$(ProjectDir)",
       "commandLineArgs": "watch run",
       "launchBrowser": true,
-      "environmentVariables": {"ASPNETCORE_ENVIRONMENT": "Development" }
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
     }
   }
 }

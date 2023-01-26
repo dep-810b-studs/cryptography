@@ -1,10 +1,9 @@
-﻿namespace Cryptography.Algorithms.Symmetric
+﻿namespace Cryptography.Algorithms.Symmetric;
+
+public enum SymmetricCipherMode
 {
-    public enum SymmetricCipherMode
-    {
-        ElectronicCodeBook,
-        CipherBlockChaining,
-        CipherFeedback,
-        OutputFeedback
-    }
+    ElectronicCodeBook,
+    CipherBlockChaining,
+    CipherFeedback,
+    OutputFeedback
 }
