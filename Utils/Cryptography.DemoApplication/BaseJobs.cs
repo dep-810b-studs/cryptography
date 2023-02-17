@@ -16,7 +16,7 @@ public abstract class BaseJobs : IDemoApplicationJobs
         return Actions[jobNumber - 1];
     }
 
-    protected delegate void func();
+    protected delegate void Job();
 
     #region Utils
 

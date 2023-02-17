@@ -12,7 +12,7 @@ public class GaloisFieldJobs : BaseJobs
 
     public GaloisFieldJobs()
     {
-        Actions = new[]
+        Actions = new Delegate[]
         {
             ElementGF256ToPotentialFormJob,
             MultiplicationInGF256Job,

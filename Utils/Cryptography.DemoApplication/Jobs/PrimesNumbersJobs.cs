@@ -23,7 +23,7 @@ public class PrimesNumbersJobs : BaseJobs
     /// <summary>
     ///     1. Напишите программу, выводящую все простые числа, которые меньше m.
     /// </summary>
-    private readonly func _getPrimeNumbersLessThenMJob = () =>
+    private readonly Job _getPrimeNumbersLessThenMJob = () =>
     {
         var m = GetNumberFromUser();
         Console.Write($"Целые простые числа меньшие {m} : ");
@@ -35,7 +35,7 @@ public class PrimesNumbersJobs : BaseJobs
     /// <summary>
     ///     2. Выведите на экран приведенную систему вычетов по модулю m.
     /// </summary>
-    private readonly func _getReducedResidueSystemJob = () =>
+    private readonly Job _getReducedResidueSystemJob = () =>
     {
         var m = GetNumberFromUser();
         var residueNumberSystem = new ResidueNumberSystem
@@ -51,7 +51,7 @@ public class PrimesNumbersJobs : BaseJobs
     ///     3. Напишите функцию, вычисляющую значение f(m), где
     ///     f(m)−функция Эйлера.
     /// </summary>
-    private readonly func _calculateEylerFunctionJob = () =>
+    private readonly Job _calculateEylerFunctionJob = () =>
     {
         var m = GetNumberFromUser();
         var functionValue = ResidueNumberSystem.CalculateEylerFunction((int)m);
@@ -63,7 +63,7 @@ public class PrimesNumbersJobs : BaseJobs
     ///     модулю m. Реализуйте в вашей библиотеке арифметические
     ///     операции, операцию возведения в целую степень.
     /// </summary>
-    private readonly func _workWithFullResidueSystemJob = () =>
+    private readonly Job _workWithFullResidueSystemJob = () =>
     {
         var module = GetNumberFromUser("Введите модуль системы:");
 
@@ -102,7 +102,7 @@ public class PrimesNumbersJobs : BaseJobs
     /// <summary>
     ///     5. Реализуйте алгоритм быстрого возведения в степень в кольце вычетов.
     /// </summary>
-    private readonly func _fastPowAlgorithmJob = () =>
+    private readonly Job _fastPowAlgorithmJob = () =>
     {
         var m = GetNumberFromUser("Введите модуль кольца вычетов");
         var residueNumberSystem = new ResidueNumberSystem

@@ -9,7 +9,7 @@ public class WorkingWithBitsJobs : BaseJobs
 {
     public WorkingWithBitsJobs()
     {
-        Actions = new[]
+        Actions = new []
         {
             _manipulatingBits,
             _swappingBytes,
@@ -28,7 +28,7 @@ public class WorkingWithBitsJobs : BaseJobs
     ///     3. Поменять местами i-ый и j-ый биты в числе a. Числа i и j предварительно запросить у пользователя.
     ///     4. Обнулить младшие m бит
     /// </summary>
-    private readonly func _manipulatingBits = () =>
+    private readonly Job _manipulatingBits = () =>
     {
         Console.WriteLine("1) Введите 32-разрядное число в двоичной сс");
         var inputNumber = Convert.ToUInt32(Console.ReadLine(), 2);
@@ -65,7 +65,7 @@ public class WorkingWithBitsJobs : BaseJobs
     ///     2nd task
     ///     5. Поменять местами байты в заданном 32-х разрядном целом числе. Перестановка задается пользователем.
     /// </summary>
-    private readonly func _swappingBytes = () =>
+    private readonly Job _swappingBytes = () =>
     {
         Console.WriteLine("Please, enter a number in a binary representation:");
         var num = Convert.ToUInt32(Console.ReadLine(), 2);
@@ -86,7 +86,7 @@ public class WorkingWithBitsJobs : BaseJobs
     ///     6. Найти максимальную степень 2, на которую делится данное целое число. Примечание. Операторами цикла пользоваться
     ///     нельзя.
     /// </summary>
-    private readonly func _maxTwoDegree = () =>
+    private readonly Job _maxTwoDegree = () =>
     {
         Console.WriteLine("Введите число:");
         var num = Convert.ToUInt32(Console.ReadLine());
@@ -99,7 +99,7 @@ public class WorkingWithBitsJobs : BaseJobs
     ///     4th task
     ///     7. Пусть x целое число. Найти такое p, что 2^p<=x<=2^(p+1).
     /// </summary>
-    private readonly func _numberBetween = () =>
+    private readonly Job _numberBetween = () =>
     {
         Console.WriteLine("Введите число:");
         var num = Convert.ToUInt32(Console.ReadLine());
@@ -112,7 +112,7 @@ public class WorkingWithBitsJobs : BaseJobs
     ///     5th task
     ///     8. Написать методы циклического сдвига в 2^p разрядном целом числе на n бит влево и вправо
     /// </summary>
-    private readonly func _cyclicShift = () =>
+    private readonly Job _cyclicShift = () =>
     {
         Console.WriteLine("Введите число");
         var num = Convert.ToUInt32(Console.ReadLine(), 2);

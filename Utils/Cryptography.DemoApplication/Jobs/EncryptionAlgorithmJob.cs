@@ -15,7 +15,7 @@ public class EncryptionAlgorithmJob : BaseJobs
 
     public EncryptionAlgorithmJob(ISymmetricCipher symmetricCipher)
     {
-        Actions = new[]
+        Actions = new Delegate[]
         {
             Encrypt,
             Decrypt,
