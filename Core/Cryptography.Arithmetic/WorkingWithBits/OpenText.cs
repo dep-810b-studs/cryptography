@@ -134,7 +134,7 @@ public class OpenText
 
     public static implicit operator OpenText(uint number)
     {
-        return new(number);
+        return new OpenText(number);
     }
 
     #endregion

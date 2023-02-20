@@ -9,7 +9,7 @@ public class WorkingWithBitsJobs : BaseJobs
 {
     public WorkingWithBitsJobs()
     {
-        Actions = new []
+        Actions = new[]
         {
             _manipulatingBits,
             _swappingBytes,

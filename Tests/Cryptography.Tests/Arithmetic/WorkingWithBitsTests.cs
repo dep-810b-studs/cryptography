@@ -146,8 +146,8 @@ public class WorkingWithBitsTests
         0b00000000000000001111111111111111,
         16, ShiftDirection.Left)]
     [InlineData(
-        0b11111111111111110000000000000000,
-        0b00000000000000001111111111111111,
+        0b11111111_11111111_00000000_00000000,
+        0b00000000_00000000_11111111_11111111,
         16, ShiftDirection.Right)]
     public void CyclicShiftShouldCorrectWork(uint number, uint expectedResult, int shift, ShiftDirection shiftDirection)
     {

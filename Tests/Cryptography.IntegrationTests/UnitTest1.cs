@@ -14,7 +14,7 @@ public class UnitTest1
         var stream = new MemoryStream(Encoding.UTF8.GetBytes("Hello,world!"));
         using var multipartFormDataContent = new MultipartFormDataContent
         {
-              { new StreamContent(stream), "inputFile", "input.txt" }
+            { new StreamContent(stream), "inputFile", "input.txt" }
         };
 
         using var response = await client.PostAsync("/api/upload2", multipartFormDataContent);
@@ -23,5 +23,5 @@ public class UnitTest1
         await fileStream.CopyToAsync(resultStream);
         var resultFileContent = Encoding.UTF8.GetString(resultStream.ToArray());
         Assert.Equal("Hello, world!", resultFileContent);
-    }   
+    }
 }

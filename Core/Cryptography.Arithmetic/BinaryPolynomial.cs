@@ -23,7 +23,7 @@ public class BinaryPolynomial
 
     public BinaryPolynomial Copy()
     {
-        return new(Value);
+        return new BinaryPolynomial(Value);
     }
 
     public static (BinaryPolynomial d, BinaryPolynomial x, BinaryPolynomial y) ExtendedEuclideanAlgorithm(
@@ -150,12 +150,12 @@ public class BinaryPolynomial
 
     public OpenText ToOpenText()
     {
-        return new(Value);
+        return new OpenText(Value);
     }
 
     public static implicit operator BinaryPolynomial(uint polynomialValue)
     {
-        return new(polynomialValue);
+        return new BinaryPolynomial(polynomialValue);
     }
 
     public static implicit operator uint(BinaryPolynomial polynomial)
@@ -165,12 +165,12 @@ public class BinaryPolynomial
 
     public static implicit operator BinaryPolynomial(int polynomialValue)
     {
-        return new((uint)polynomialValue);
+        return new BinaryPolynomial((uint)polynomialValue);
     }
 
     public static implicit operator BinaryPolynomial(byte polynomialValue)
     {
-        return new(polynomialValue);
+        return new BinaryPolynomial(polynomialValue);
     }
 
     public static implicit operator byte(BinaryPolynomial polynomialValue)

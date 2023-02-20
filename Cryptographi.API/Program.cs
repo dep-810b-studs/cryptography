@@ -34,9 +34,11 @@ app.UseHttpsRedirection();
 
 app.Run();
 
-public partial class Program { }
+public partial class Program
+{
+}
 
 public class FileRequest
 {
     public IFormFile FormFile { get; set; }
-};
+}
