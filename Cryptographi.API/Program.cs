@@ -8,6 +8,7 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+//todo: use controller for form data input
 app.MapPost("/api/upload", async (HttpContext context, CancellationToken cancellationToken) =>
 {
     var reader = new MultipartReader("input", context.Request.Body);
