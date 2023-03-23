@@ -34,7 +34,7 @@ public class ElectronicCodeBookStrategy : ICipherStrategy
             CipherAction.Decrypt => symmetricCipher.Decrypt
         };
 
-        var parallelForResult = Parallel.For(0, data.Count,
+         Parallel.For(0, data.Count,
             blockNumber => { encryptedMessageblocks[blockNumber] = cipherConvertion(data[blockNumber]); });
 
         return encryptedMessageblocks.ToList();

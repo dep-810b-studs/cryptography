@@ -24,9 +24,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utils", "Utils", "{CCB55BC7
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptography.Benchmarks", "Utils\Cryptography.Benchmarks\Cryptography.Benchmarks.csproj", "{547EC6D2-1B8B-4BA2-B8CD-6452414EFCF5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptographi.API", "Cryptographi.API\Cryptographi.API.csproj", "{5571894D-693D-488B-B128-B8FA089D11D2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptography.API", "Cryptography.API\Cryptography.API.csproj", "{5571894D-693D-488B-B128-B8FA089D11D2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptography.IntegrationTests", "Tests\Cryptography.IntegrationTests\Cryptography.IntegrationTests.csproj", "{7AC4B355-0F6F-44F9-AED0-3147789188B5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptography.Infrastructure", "Cryptography.Infrastructure\Cryptography.Infrastructure.csproj", "{A3950D5A-9425-43D0-9386-15B69B7F3CAD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -74,6 +76,10 @@ Global
 		{7AC4B355-0F6F-44F9-AED0-3147789188B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7AC4B355-0F6F-44F9-AED0-3147789188B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7AC4B355-0F6F-44F9-AED0-3147789188B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3950D5A-9425-43D0-9386-15B69B7F3CAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3950D5A-9425-43D0-9386-15B69B7F3CAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3950D5A-9425-43D0-9386-15B69B7F3CAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3950D5A-9425-43D0-9386-15B69B7F3CAD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{1D50AFC4-629E-44FC-9041-0D57EFFBCEBB} = {7F63A9D7-6100-4D86-8D59-66932FD86906}

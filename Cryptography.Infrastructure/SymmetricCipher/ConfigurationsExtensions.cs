@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using BlazorDownloadFile;
-using Cryptography.Algorithms;
+﻿using Cryptography.Algorithms;
 using Cryptography.Algorithms.Rijandel;
 using Cryptography.Algorithms.Symmetric;
 using Cryptography.Algorithms.Symmetric.CipherManager;
@@ -9,7 +7,7 @@ using Cryptography.Algorithms.Symmetric.CipherSystem;
 using Cryptography.Algorithms.Symmetric.Padding;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Cryptography.WebInterface.ServerSideApp.SymmetricCipher;
+namespace Cryptography.Infrastructure.SymmetricCipher;
 
 public static class ConfigurationsExtensions
 {
@@ -26,6 +24,5 @@ public static class ConfigurationsExtensions
         services.AddSingleton<IPaddingService, PaddingService>();
         services.AddSingleton<ISymmetricCipherManager, SymmetricCipherManager>();
         services.AddSingleton<ISymmetricSystem, SymmetricSystem>();
-        services.AddBlazorDownloadFile();
     }
 }

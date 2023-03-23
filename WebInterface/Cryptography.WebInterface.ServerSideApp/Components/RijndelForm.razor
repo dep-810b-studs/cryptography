@@ -52,19 +52,19 @@
         SymmetricCipherMode = SymmetricCipherMode.ElectronicCodeBook
     };
 
-    private Stream _dataToProcess;
+    private byte[] _dataToProcess;
     private byte[] _processedData;
-    private Stream _key;
-    private Stream _initializationFile;
+    private byte[] _key;
+    private byte[] _initializationVector;
 
     [Inject]
     IBlazorDownloadFileService BlazorDownloadFileService { get; set; }
 
-    private async Task HandleSubmit()
+    private void HandleSubmit()
     {
         Logger.LogInformation("file processing started");
-        _processedData = await SymmetricCipherSystem.HandleEncryption(_cipherParamsModel.CipherAction, _cipherParamsModel.SymmetricCipherMode,
-            _cipherParamsModel.CipherBlockSize, _dataToProcess, _key, _initializationFile);
+        _processedData = SymmetricCipherSystem.HandleEncryption(_cipherParamsModel.CipherAction, _cipherParamsModel.SymmetricCipherMode,
+            _cipherParamsModel.CipherBlockSize, _dataToProcess, _key, _initializationVector);
         BlazorDownloadFileService.ClearBuffers();
         BlazorDownloadFileService.AddBuffer(_processedData);
         BlazorDownloadFileService.DownloadBinaryBuffers("processed.jpg");
@@ -73,17 +73,26 @@
 
     private void OnInputFileChange(InputFileChangeEventArgs obj)
     {
-        _dataToProcess = obj.File.OpenReadStream();
+        using var stream = obj.File.OpenReadStream();
+        using var memoryStream = new MemoryStream();
+        stream.CopyTo(memoryStream);
+        _dataToProcess = memoryStream.ToArray();
     }
 
     private void OnKeyFileChange(InputFileChangeEventArgs obj)
     {
-        _key = obj.File.OpenReadStream();
+        using var stream = obj.File.OpenReadStream();
+        using var memoryStream = new MemoryStream();
+        stream.CopyTo(memoryStream);
+        _key = memoryStream.ToArray();
     }
 
     private void OnInitVectorFileChange(InputFileChangeEventArgs obj)
     {
-        _initializationFile = obj.File.OpenReadStream();
+        using var stream = obj.File.OpenReadStream();
+        using var memoryStream = new MemoryStream();
+        stream.CopyTo(memoryStream);
+        _initializationVector = memoryStream.ToArray();
     }
 
 }

@@ -14,10 +14,11 @@ public class UnitTest1
         var stream = new MemoryStream(Encoding.UTF8.GetBytes("Hello,world!"));
         using var multipartFormDataContent = new MultipartFormDataContent
         {
-            { new StreamContent(stream), "inputFile", "input.txt" }
+            { new StreamContent(stream), "inputFile", "input.txt" },
+            { new StringContent("1"), "cipherAction" }
         };
 
-        using var response = await client.PostAsync("/api/upload2", multipartFormDataContent);
+        using var response = await client.PostAsync("/api/upload", multipartFormDataContent);
         await using var fileStream = await response.Content.ReadAsStreamAsync();
         using var resultStream = new MemoryStream();
         await fileStream.CopyToAsync(resultStream);

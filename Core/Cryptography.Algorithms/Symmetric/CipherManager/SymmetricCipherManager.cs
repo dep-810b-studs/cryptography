@@ -93,8 +93,6 @@ public class SymmetricCipherManager : ISymmetricCipherManager
 
     public byte[] Encrypt(byte[] message)
     {
-        //todo: подумать над адекватной проверкой инициализации полей
-
         if (CipherMode is not SymmetricCipherMode.ElectronicCodeBook && InitializationVector is null)
             throw new ArgumentNullException(nameof(InitializationVector),
                 "You should specify IV before encryption");

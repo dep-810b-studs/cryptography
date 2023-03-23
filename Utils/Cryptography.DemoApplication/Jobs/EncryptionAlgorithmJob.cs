@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using Cryptography.Algorithms;
 using Cryptography.Algorithms.Symmetric;
 using Cryptography.Algorithms.Symmetric.CipherManager;
@@ -37,38 +38,56 @@ public class EncryptionAlgorithmJob : BaseJobs
     {
         Console.WriteLine("Введите имя файла для шифрования");
         var inputFileName = Console.ReadLine();
+        var inputFileBytes = ReadAllBytesFromFile(inputFileName);
+        
         Console.WriteLine("Введите имя файла, который нужно сохранить");
         var outputFileName = Console.ReadLine();
+        
         Console.WriteLine("Введите имя файла ключа, который нужно сохранить");
         var keyFileName = Console.ReadLine();
+        var keyFileBytes = ReadAllBytesFromFile(keyFileName);
 
-        var encryptionParams = new EncryptionParams(CipherAction.Encrypt, _cipherBlockSize,
-            SymmetricCipherMode.ElectronicCodeBook,
-            inputFileName, outputFileName, keyFileName);
-
-        _symmetricSystem.HandleEncryption(encryptionParams);
+        var encryptedData = _symmetricSystem.HandleEncryption(CipherAction.Encrypt, 
+            SymmetricCipherMode.ElectronicCodeBook, _cipherBlockSize, inputFileBytes, keyFileBytes);
+        
+        using var file = File.OpenWrite(outputFileName);
+        file.Write(encryptedData);
     }
 
     private void Decrypt()
     {
         Console.WriteLine("Введите имя файла для расшифровки");
         var inputFileName = Console.ReadLine();
+        var inputFileBytes = ReadAllBytesFromFile(inputFileName);
+        
         Console.WriteLine("Введите имя файла, который нужно сохранить");
         var outputFileName = Console.ReadLine();
+        
         Console.WriteLine("Введите имя файла ключа, который нужно сохранить");
         var keyFileName = Console.ReadLine();
+        var keyFileBytes = ReadAllBytesFromFile(keyFileName);
 
-        var encryptionParams = new EncryptionParams(CipherAction.Decrypt, _cipherBlockSize,
-            SymmetricCipherMode.ElectronicCodeBook,
-            inputFileName, outputFileName, keyFileName);
-
-        _symmetricSystem.HandleEncryption(encryptionParams);
+        var decryptedData = _symmetricSystem.HandleEncryption(CipherAction.Decrypt, 
+            SymmetricCipherMode.ElectronicCodeBook, _cipherBlockSize, inputFileBytes, keyFileBytes);
+        
+        using var file = File.OpenWrite(outputFileName);
+        file.Write(decryptedData);
     }
 
     private void GenerateRandomKey()
     {
         Console.WriteLine("Введите имя файла");
         var fileName = Console.ReadLine();
-        _symmetricSystem.GenerateAndSaveRandomKeyToFile(fileName, _cipherBlockSize);
+        var key = _symmetricSystem.GenerateRandomKey(_cipherBlockSize);
+        using var file = File.OpenWrite(fileName);
+        file.Write(key);
+    }
+    
+    private static byte[] ReadAllBytesFromFile(string fileName)
+    {
+        using var sourceStream = File.OpenRead(fileName);
+        using var tempStream = new MemoryStream(); 
+        sourceStream.CopyTo(tempStream);
+        return tempStream.ToArray();
     }
 }
