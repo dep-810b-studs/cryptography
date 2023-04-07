@@ -26,4 +26,10 @@
         <ProjectReference Include="..\..\Cryptography.API\Cryptography.API.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="result.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>
